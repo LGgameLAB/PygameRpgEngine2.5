@@ -5,7 +5,6 @@ import time
 import sys
 import npc
 
-#hello
 
 class player:
 
