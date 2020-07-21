@@ -1,0 +1,60 @@
+('C:\\Users\\LukeG\\Documents\\Python dev\\RPG Engine v2.5 (take '
+ '3)\\build\\RPG Py Engine v2.5\\PKG-00.pkg',
+ {'BINARY': 1,
+  'DATA': 1,
+  'EXECUTABLE': 1,
+  'EXTENSION': 1,
+  'PYMODULE': 1,
+  'PYSOURCE': 1,
+  'PYZ': 0},
+ [('PYZ-00.pyz',
+   'C:\\Users\\LukeG\\Documents\\Python dev\\RPG Engine v2.5 (take '
+   '3)\\build\\RPG Py Engine v2.5\\PYZ-00.pyz',
+   'PYZ'),
+  ('struct',
+   'c:\\users\\lukeg\\documents\\python 3.8\\lib\\struct.pyo',
+   'PYMODULE'),
+  ('pyimod01_os_path',
+   'c:\\users\\lukeg\\documents\\python '
+   '3.8\\lib\\site-packages\\PyInstaller\\loader\\pyimod01_os_path.pyc',
+   'PYMODULE'),
+  ('pyimod02_archive',
+   'c:\\users\\lukeg\\documents\\python '
+   '3.8\\lib\\site-packages\\PyInstaller\\loader\\pyimod02_archive.pyc',
+   'PYMODULE'),
+  ('pyimod03_importers',
+   'c:\\users\\lukeg\\documents\\python '
+   '3.8\\lib\\site-packages\\PyInstaller\\loader\\pyimod03_importers.pyc',
+   'PYMODULE'),
+  ('pyiboot01_bootstrap',
+   'c:\\users\\lukeg\\documents\\python '
+   '3.8\\lib\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
+   'PYSOURCE'),
+  ('pyi_rth__tkinter',
+   'C:\\Users\\LukeG\\Documents\\python '
+   '3.8\\Lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth__tkinter.py',
+   'PYSOURCE'),
+  ('pyi_rth_multiprocessing',
+   'C:\\Users\\LukeG\\Documents\\python '
+   '3.8\\Lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_multiprocessing.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgres',
+   'C:\\Users\\LukeG\\Documents\\python '
+   '3.8\\Lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_pkgres.py',
+   'PYSOURCE'),
+  ('pyi_rth_win32comgenpy',
+   'C:\\Users\\LukeG\\Documents\\python '
+   '3.8\\Lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_win32comgenpy.py',
+   'PYSOURCE'),
+  ('RPG Py Engine v2.5',
+   'C:\\Users\\LukeG\\Documents\\Python dev\\RPG Engine v2.5 (take 3)\\RPG Py '
+   'Engine v2.5.py',
+   'PYSOURCE'),
+  ('RPG Py Engine v2.5.exe.manifest',
+   'C:\\Users\\LukeG\\Documents\\Python dev\\RPG Engine v2.5 (take '
+   '3)\\build\\RPG Py Engine v2.5\\RPG Py Engine v2.5.exe.manifest',
+   'BINARY')],
+ True,
+ False,
+ False,
+ [])
