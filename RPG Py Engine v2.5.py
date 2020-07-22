@@ -18,7 +18,7 @@ class player:
         self.vel = speed
         self.width, self.height = settings.tileSize, settings.tileSize
         self.rect = pygame.Rect(
-            self.x, self.y, settings.tileSize,  settings.tileSize)
+        self.x, self.y, settings.tileSize,  settings.tileSize)
         self.fullArt = self.animations['fullArt']
         self.framed = False
         self.moveTick = settings.ticker(moveBuffer)
