@@ -54,7 +54,7 @@ class player:
             clicked = True
 
         #else:
-            self.moveTick.tick()
+            #self.moveTick.tick()
 
         #if clicked:
         #    self.moveTick.tick()
