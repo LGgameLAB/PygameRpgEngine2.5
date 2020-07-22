@@ -5,3 +5,5 @@ Make your RPG stories come to life with this python/pygame RPG engine supportive
 Can load TMX files in the xml format.
 
 Supportive of character sheet frame by frame animation.
+
+Instantly loads collision.
