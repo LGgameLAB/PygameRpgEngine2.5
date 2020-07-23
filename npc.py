@@ -61,8 +61,9 @@ class npc:
                 self.newDirs.append(val)
 
         self.dir = self.newDirs[random.randint(0, 2)]
-        self.moving = True
-        self.dist = 64
+        if self.moveType == 1:
+            self.moving = True
+            self.dist = 64
 
     def move(self, walls):
         if self.moving:
@@ -107,13 +108,13 @@ class npc:
         self.frame = self.setAnimations.GetFrame()
 
 
-def goblin():
+def goblin(x, y):
     gobSamp = pygame.image.load('sample_assets/sampleGoblin.png')
     gobUp = pygame.image.load('sample_assets/goblinUp.png')
     gobDown = pygame.image.load('sample_assets/goblinDown.png')
     gobLeft = pygame.image.load('sample_assets/goblinLeft.png')
     gobRight = pygame.image.load('sample_assets/goblinRight.png')
-    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 2, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, 64*9, 64*10, 64, 64)
+    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 2, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize)
 
 # class enemy:
 #      def __init__(self, name):

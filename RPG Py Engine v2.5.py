@@ -146,8 +146,10 @@ class room:
                 self.walls.append(pygame.Rect(int(tile_object.x*self.scale), int(tile_object.y*self.scale),
                                               int(tile_object.width*self.scale), int(tile_object.height*self.scale)))
 
-            # if tile_object.name == 'void':
-            #    self.walls.append(pygame.Rect(int(tile_object.x*self.scale), int(tile_object.y*self.scale), int(tile_object.width*self.scale), int(tile_object.height*self.scale)))
+            if tile_object.name == 'goblin':
+                self.sprites.append(npc.goblin(tile_object.x * self.scale, tile_object.y * self.scale))
+                
+
 
     def wallOffset(self, offset):
         print(self.walls)
@@ -232,8 +234,7 @@ class game:
             charImage], 'r': [charImage], 'fullArt': charImage}
         self.player = player(
             self.map.room.pStartX, self.map.room.pStartY, 'r', charAnimation, 4, 10)
-        gob1 = npc.goblin()
-        self.map.room.loadSprites(gob1)
+
         self.cam = cam(self.map.room.width, self.map.room.height, True)
         self.mapLayer.append(self.map.room)
         self.spriteLayer.append(self.player)
