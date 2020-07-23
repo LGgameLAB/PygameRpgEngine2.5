@@ -5,30 +5,35 @@ import settings as stgs
 
 import random
 
+
 class npc:
-    def __init__(self, name, stats, moveType, interactionType, imgsheet, x, y, w, h):
+    def __init__(self, name, stats, moveType, interactionType, imgSheet, x, y, w, h):
         self.name = name
         self.stats = stats
         self.moveType = moveType
         self.interactionType = interactionType
-        self.imgsheet = imgsheet
+        self.imgSheet = imgSheet
         self.dir = 'r'
         self.x, self.y = x, y
-        self.rect = pygame.Rect(self.x, self.y, w, h)
+        self.width, self.height = w, h
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.framed = True
-        self.setAnimations = anims.animation(self.imgsheet, self.dir, 0.2)
+        self.setAnimations = anims.animation(self.imgSheet, self.dir, 0.2, self.imgSheet['startFrame'])
         self.setAnimation()
         self.ticker1 = stgs.ticker(5)
         self.dirs = ['u', 'd', 'l', 'r']
+        self.moving = False
+        self.vel = 1
+        self.dist = 0
 
         self.clock = 0
-    def update(self):
+
+    def update(self, walls):
 
         self.clock += 1
 
-
         if self.ticker1.done:
-            self.setAnimations.update(True, self.dir)
+            self.setAnimations.update(self.moving, self.dir)
 
         self.setAnimation()
 
@@ -42,20 +47,60 @@ class npc:
         if self.moveType == 1:
             if self.clock > 200:
                 self.clock = 0
-                self.move()
+                self.changeDir()
 
         if self.moveType == 0:
             pass
 
-    def move(self):
+        self.move(walls)
+
+    def changeDir(self):
         self.newDirs = []
         for val in self.dirs:
             if val != self.dir:
                 self.newDirs.append(val)
 
         self.dir = self.newDirs[random.randint(0, 2)]
+        self.moving = True
+        self.dist = 64
 
+    def move(self, walls):
+        if self.moving:
+            if self.dist < self.vel:
+                self.moving = False
+                self.dist = 0
+            else:
+                self.dist -= self.vel
 
+                if self.dir == 'u':
+                    self.y -= self.vel
+                    self.checkCollide(walls)
+
+                if self.dir == 'd':
+                    self.y += self.vel
+                    self.checkCollide(walls)
+                if self.dir == 'l':
+                    self.x -= self.vel
+                    self.checkCollide(walls)
+                if self.dir == 'r':
+                    self.x += self.vel
+                    self.checkCollide(walls)
+
+                self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def checkCollide(self, walls):
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        for wall in walls:
+            if wall.colliderect(self.rect):
+                if self.dir == 'l':
+                    self.x += self.vel
+                elif self.dir == 'r':
+                    self.x -= self.vel
+                elif self.dir == 'u':
+                    self.y += self.vel
+                else:
+                    self.y -= self.vel 
+                self.changeDir()
 
     def setAnimation(self):
         self.image = self.setAnimations.GetImg()
@@ -68,7 +113,7 @@ def goblin():
     gobDown = pygame.image.load('sample_assets/goblinDown.png')
     gobLeft = pygame.image.load('sample_assets/goblinLeft.png')
     gobRight = pygame.image.load('sample_assets/goblinRight.png')
-    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 2, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'fullArt': gobSamp}, 64*9, 64*10, 64, 64)
+    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 2, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, 64*9, 64*10, 64, 64)
 
 # class enemy:
 #      def __init__(self, name):

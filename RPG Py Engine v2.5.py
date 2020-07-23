@@ -160,7 +160,7 @@ class room:
 
     def update(self):
         for sprite in self.sprites:
-            sprite.update()
+            sprite.update(self.walls)
 
 
 class roomGroup:

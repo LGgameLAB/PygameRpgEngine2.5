@@ -5,10 +5,11 @@ import settings as stgs
 
 class animation:
 
-    def __init__(self, ImgSheet, dir, buffer):
+    def __init__(self, ImgSheet, dir, buffer, startFrame):
         self.ImgSheet = ImgSheet
-        self.framex = 0
-        self.frame = pygame.Rect(self.framex, 0, 64, 64)
+        self.startFrame = startFrame * stgs.tileSize
+        self.framex = self.startFrame
+        self.frame = pygame.Rect(self.framex, 0, stgs.tileSize, stgs.tileSize)
         self.buffer = buffer
         self.cycle = False
         self.dir = dir
@@ -17,19 +18,19 @@ class animation:
         self.dir = dir
         if par1:
             if self.cycle:
-                if self.framex == self.ImgSheet[self.dir].get_width() - 64:
+                if self.framex == self.ImgSheet[self.dir].get_width() - stgs.tileSize:
                     self.framex = 0
                 else:
-                    self.framex += 64
+                    self.framex += stgs.tileSize
 
             else:
                 self.cycle = True
 
         else:
             self.cycle = False
-            self.framex = 0
+            self.framex = self.startFrame
 
-        self.frame = pygame.Rect(self.framex, 0, 64, 64)
+        self.frame = pygame.Rect(self.framex, 0, stgs.tileSize, stgs.tileSize)
 
     def GetFrame(self):
         return self.frame
