@@ -20,6 +20,8 @@ tileSize = 64
 gridWidth = winWidth / tileSize
 gridHeight = winHeight / tileSize
 
+fps = 120
+buffer = 1/fps
 class ticker:
     def __init__(self, buffer):
         self.buffer = buffer

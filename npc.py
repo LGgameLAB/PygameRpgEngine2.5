@@ -3,6 +3,7 @@ import pygame
 import animations as anims
 import settings as stgs
 
+import random
 
 class npc:
     def __init__(self, name, stats, moveType, interactionType, imgsheet, x, y, w, h):
@@ -17,20 +18,21 @@ class npc:
         self.framed = True
         self.setAnimations = anims.animation(self.imgsheet, self.dir, 0.2)
         self.setAnimation()
-        self.ticker1 = stgs.ticker(20)
-        self.ticker2 = stgs.ticker(50)
+        self.ticker1 = stgs.ticker(5)
+        self.dirs = ['u', 'd', 'l', 'r']
 
+        self.clock = 0
     def update(self):
-        if self.ticker1.done:
-            self.move()
 
-        if self.ticker2.done:
+        self.clock += 1
+
+
+        if self.ticker1.done:
             self.setAnimations.update(True, self.dir)
 
         self.setAnimation()
 
         self.ticker1.tick()
-        self.ticker2.tick()
 
         if self.interactionType == 1:
             pass
@@ -38,12 +40,22 @@ class npc:
             pass
 
         if self.moveType == 1:
-            pass
+            if self.clock > 200:
+                self.clock = 0
+                self.move()
+
         if self.moveType == 0:
             pass
 
     def move(self):
-        pass
+        self.newDirs = []
+        for val in self.dirs:
+            if val != self.dir:
+                self.newDirs.append(val)
+
+        self.dir = self.newDirs[random.randint(0, 2)]
+
+
 
     def setAnimation(self):
         self.image = self.setAnimations.GetImg()

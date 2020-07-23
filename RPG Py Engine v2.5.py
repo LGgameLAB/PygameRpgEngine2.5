@@ -8,21 +8,19 @@ import npc
 
 class player:
 
-    def __init__(self, startX, startY, startDir, animations, moveBuffer, speed, animationBuffer):
+    def __init__(self, startX, startY, startDir, animations, speed, animationBuffer):
         self.animations = animations
         self.x = int(startX)
         self.y = int(startY)
-        self.moveBuffer = moveBuffer/100
+        #self.moveBuffer = moveBuffer/100
         #self.animationSpeed = animationSpeed
         self.dir = startDir
         self.vel = speed
         self.width, self.height = settings.tileSize, settings.tileSize
         self.rect = pygame.Rect(
-        self.x, self.y, settings.tileSize,  settings.tileSize)
+            self.x, self.y, settings.tileSize,  settings.tileSize)
         self.fullArt = self.animations['fullArt']
         self.framed = False
-        self.moveTick = settings.ticker(moveBuffer)
-        self.moveTick.done = False
         self.animationTick = settings.ticker(animationBuffer)
 
         self.setAnimation()
@@ -31,7 +29,7 @@ class player:
         keys = pygame.key.get_pressed()
 
         clicked = False
-        #if self.moveTick.done:
+        # if self.moveTick.done:
         if keys[pygame.K_UP]:
             self.y -= self.vel
             self.dir = 'u'
@@ -53,12 +51,12 @@ class player:
             self.checkCollide(walls)
             clicked = True
 
-        #else:
-            #self.moveTick.tick()
+        # else:
+            # self.moveTick.tick()
 
-        #if clicked:
+        # if clicked:
         #    self.moveTick.tick()
-            #time.sleep(self.moveBuffer)
+            # time.sleep(self.moveBuffer)
 
         self.x = int(self.x)
         self.y = int(self.y)
@@ -69,11 +67,10 @@ class player:
 
     def update(self, walls):
         self.move(walls)
-        
+
         if self.animationTick.done:
             self.setAnimation()
 
-        
         self.animationTick.tick()
 
     def checkCollide(self, walls):
@@ -165,14 +162,6 @@ class room:
         for sprite in self.sprites:
             sprite.update()
 
-    # def render(self, win):
-    #    win.blit(self.tempSurface, (self.x, self.y))
-
-    # def makeMap(self):
-    #    tempSurface = pygame.Surface((self.width, self.height)).convert()
-    #    self.render(tempSurface)
-    #    self.mapImage = tempSurface.convert()
-
 
 class roomGroup:
     def __init__(self):
@@ -221,10 +210,12 @@ class cam:
 
 class game:
 
-    def __init__(self, buffer):
-        self.buffer = (buffer / 1000)
+    def __init__(self):
+        self.buffer = settings.buffer
         self.useCam = True
-        self.camLayers = [1]
+        self.mapLayer = []
+        self.spriteLayer = []
+        self.overLayer = []
         self.fightSceneBool = False
         self.new()
 
@@ -240,15 +231,21 @@ class game:
         charAnimation = {'u': [charImage], 'd': [charImage], 'l': [
             charImage], 'r': [charImage], 'fullArt': charImage}
         self.player = player(
-            self.map.room.pStartX, self.map.room.pStartY, 'r', charAnimation, 4, 1, 10)
+            self.map.room.pStartX, self.map.room.pStartY, 'r', charAnimation, 4, 10)
         gob1 = npc.goblin()
         self.map.room.loadSprites(gob1)
         self.cam = cam(self.map.room.width, self.map.room.height, True)
-        pygame.display.set_caption(settings.winTitle)
+        self.mapLayer.append(self.map.room)
+        self.spriteLayer.append(self.player)
+
+        for sprite in self.map.room.sprites:
+            self.spriteLayer.append(sprite)
 
     def events(self):
         self.map.update()
         self.map.room.update()
+        self.player.move(self.map.room.walls)
+        self.cam.update(self.player)
         pass
 
     def fightScene(self):
@@ -258,31 +255,24 @@ class game:
 
             pass
 
-    def rendScreen(self, *args):
+    def rendScreen(self):
         self.win.fill(settings.bgColor)
-        x = 0
-        for arg in args:
-            x += 1
 
-            if (x in self.camLayers):
-                for item in arg:
-                    if item.framed:
-                        self.win.blit(
-                            item.image, self.cam.apply(item), item.frame)
-                    else:
-                        self.win.blit(item.image, self.cam.apply(item))
+        for item in self.mapLayer:
+            self.win.blit(item.image, self.cam.apply(item))
+
+        for item in self.spriteLayer:
+            if item.framed:
+                self.win.blit(item.image, self.cam.apply(item), item.frame)
             else:
-                for item in arg:
-                    if self.fightSceneBool:
-                        self.win.blit(item.fullArt, item.rect)
-                    else:
-                        if item.framed:
-                            self.win.blit(item.image, item.rect, item.frame)
-                        else:
-                            self.win.blit(item.image, item.rect)
+                self.win.blit(item.image, self.cam.apply(item))
 
+        for item in self.overLayer:
+            self.win.blit(item.image, item.rect)
+
+        
     def mainloop(self):
-
+        pygame.display.set_caption(settings.winTitle)
         run = True
 
         while run:
@@ -295,18 +285,15 @@ class game:
                     run = False
 
             self.events()
-            self.player.move(self.map.room.walls)
-            # self.room.wallOffset(self.cam.camera.topleft)
-            self.cam.update(self.player)
-            self.rendScreen([self.map.room, self.player] +
-                            self.map.room.sprites)
+            self.rendScreen()
+
             pygame.display.update()
 
 
 pygame.init()
 
 
-game1 = game(1)
+game1 = game()
 game1.mainloop()
 
 pygame.quit()
