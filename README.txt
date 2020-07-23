@@ -1,4 +1,4 @@
-#pyRPG Engine v2.5
+## pyRPG Engine v2.5
 
 Make your RPG stories come to life with this python/pygame RPG engine supportive of tiled map rendering and object loading.
 
