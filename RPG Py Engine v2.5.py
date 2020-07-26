@@ -12,13 +12,11 @@ class player:
         self.animations = animations
         self.x = int(startX)
         self.y = int(startY)
-        #self.moveBuffer = moveBuffer/100
-        #self.animationSpeed = animationSpeed
         self.dir = startDir
         self.vel = speed
-        self.width, self.height = settings.tileSize, settings.tileSize
+        self.width, self.height =  32, 64    #settings.tileSize, settings.tileSize
         self.rect = pygame.Rect(
-            self.x, self.y, settings.tileSize,  settings.tileSize)
+            self.x, self.y, self.width, self.height)
         self.fullArt = self.animations['fullArt']
         self.framed = False
         self.animationTick = settings.ticker(animationBuffer)
@@ -29,7 +27,8 @@ class player:
         keys = pygame.key.get_pressed()
 
         clicked = False
-        # if self.moveTick.done:
+        
+
         if keys[pygame.K_UP]:
             self.y -= self.vel
             self.dir = 'u'
@@ -151,18 +150,28 @@ class room:
                 
 
 
-    def wallOffset(self, offset):
-        print(self.walls)
-        for wall in self.walls:
-            wall = wall.move(offset)
+    #def wallOffset(self, offset):
+    #    print(self.walls)
+    #    for wall in self.walls:
+    #        wall = wall.move(offset)
+    def returnCollision(self):
+        spriteRects = []
+        for sprite in self.sprites:
+            spriteRects.append(sprite.rect)
+        
+        collision = self.walls + spriteRects
+        return collision
+
+
 
     def loadSprites(self, *args):
         for arg in args:
             self.sprites.append(arg)
 
-    def update(self):
+    def update(self, playerRect):
+        playerRect = [playerRect]
         for sprite in self.sprites:
-            sprite.update(self.walls)
+            sprite.update(self.walls + playerRect)
 
 
 class roomGroup:
@@ -244,8 +253,8 @@ class game:
 
     def events(self):
         self.map.update()
-        self.map.room.update()
-        self.player.move(self.map.room.walls)
+        self.map.room.update(self.player.rect)
+        self.player.move(self.map.room.returnCollision())
         self.cam.update(self.player)
         pass
 

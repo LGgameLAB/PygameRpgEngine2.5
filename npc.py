@@ -101,6 +101,7 @@ class npc:
                     self.y += self.vel
                 else:
                     self.y -= self.vel 
+
                 self.changeDir()
 
     def setAnimation(self):
