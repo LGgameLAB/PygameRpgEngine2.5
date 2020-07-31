@@ -6,4 +6,4 @@ Can load TMX files in the xml format.
 
 Supportive of character sheet frame by frame animation.
 
-Instantly loads collision.
+Instantly loads collision and enemies from your tiled map.
