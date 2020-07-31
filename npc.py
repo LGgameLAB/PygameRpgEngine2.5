@@ -5,6 +5,14 @@ import settings as stgs
 
 import random
 
+class dialogue:
+    def __init__(self):
+        self.image = stgs.dialogueBox1
+        self.rect = pygame.Rect(0, stgs.winHeight - self.image.get_height(), self.image.get_height(), self.image.get_width())
+        self.active = False
+
+    def update(self):
+        pass
 
 class npc:
     def __init__(self, name, stats, moveType, interactionType, imgSheet, x, y, w, h):
@@ -26,9 +34,11 @@ class npc:
         self.vel = 1
         self.dist = 0
 
+        self.dialogueBox = dialogue()
+        self.dialogueTick = stgs.ticker(8)
         self.clock = 0
 
-    def update(self, walls):
+    def update(self, walls, pRect):
 
         self.clock += 1
 
@@ -38,9 +48,18 @@ class npc:
         self.setAnimation()
 
         self.ticker1.tick()
+        self.dialogueTick.tick()
 
+        print(self.dialogueBox.active)
+        
         if self.interactionType == 1:
-            pass
+            if abs(pRect.centerx - self.rect.centerx) < stgs.tileSize + 2 and abs(pRect.centery - self.rect.centery) < stgs.tileSize + 2: 
+                keys = pygame.key.get_pressed()
+                if self.dialogueTick.done:
+                    if keys[stgs.interactionBtn]:
+                        self.dialogueBox.active = True
+                        print('interacted')
+
         if self.interactionType == 2:
             pass
 
@@ -51,8 +70,9 @@ class npc:
 
         if self.moveType == 0:
             pass
-
-        self.move(walls)
+        
+        pRect = [pRect]
+        self.move(walls + pRect)
 
     def changeDir(self):
         self.newDirs = []
@@ -109,13 +129,19 @@ class npc:
         self.frame = self.setAnimations.GetFrame()
 
 
+
+
+
+
+
+
 def goblin(x, y):
     gobSamp = pygame.image.load('sample_assets/sampleGoblin.png')
     gobUp = pygame.image.load('sample_assets/goblinUp.png')
     gobDown = pygame.image.load('sample_assets/goblinDown.png')
     gobLeft = pygame.image.load('sample_assets/goblinLeft.png')
     gobRight = pygame.image.load('sample_assets/goblinRight.png')
-    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 2, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize)
+    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 1, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize)
 
 # class enemy:
 #      def __init__(self, name):

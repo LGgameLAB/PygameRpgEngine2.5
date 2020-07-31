@@ -122,6 +122,8 @@ class room:
         self.x = 0
         self.y = 0
 
+        self.dialogue = False
+
     def load(self):
         tile = self.tmxdata.get_tile_image_by_gid
         for layer in self.tmxdata.visible_layers:
@@ -169,9 +171,17 @@ class room:
             self.sprites.append(arg)
 
     def update(self, playerRect):
-        playerRect = [playerRect]
+        #playerRect = [playerRect]
+        dialogue = False
         for sprite in self.sprites:
-            sprite.update(self.walls + playerRect)
+            sprite.update(self.walls, playerRect)
+            if sprite.dialogueBox.active:
+                dialogue = sprite.dialogueBox
+            
+                
+        #print(sprite.dialogueBox.active)
+        return dialogue
+
 
 
 class roomGroup:
@@ -248,12 +258,16 @@ class game:
         self.mapLayer.append(self.map.room)
         self.spriteLayer.append(self.player)
 
+
         for sprite in self.map.room.sprites:
             self.spriteLayer.append(sprite)
 
     def events(self):
         self.map.update()
-        self.map.room.update(self.player.rect)
+        dialogue = self.map.room.update(self.player.rect)
+        if dialogue != False:
+            self.overLayer.append(dialogue)
+        
         self.player.move(self.map.room.returnCollision())
         self.cam.update(self.player)
         pass

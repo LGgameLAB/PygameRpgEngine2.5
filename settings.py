@@ -1,3 +1,5 @@
+import pygame
+
 blue = (0, 0, 128)
 black = (0,0,0)
 white = (255,255,255)
@@ -22,6 +24,12 @@ gridHeight = winHeight / tileSize
 
 fps = 120
 buffer = 1/fps
+
+dialogueBox1 = pygame.image.load('sample_assets/dialogueBox.png')
+
+
+interactionBtn = pygame.K_z
+
 class ticker:
     def __init__(self, buffer):
         self.buffer = buffer
