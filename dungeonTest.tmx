@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="68">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="81">
+ <properties>
+  <property name="convert" type="bool" value="true"/>
+ </properties>
  <tileset firstgid="1" source="dungeon basics.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="32">
   <data encoding="csv">
@@ -75,9 +78,9 @@
  </layer>
  <layer id="4" name="Walls" width="32" height="32">
   <data encoding="csv">
-0,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,0,
-0,17,18,19,17,18,19,17,18,19,17,18,19,17,18,19,17,18,19,17,18,19,17,18,19,17,18,19,17,18,19,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,
+0,17,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,0,
+0,0,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,55,0,0,0,55,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,71,0,0,0,71,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,87,0,0,0,87,0,0,
@@ -154,18 +157,50 @@
   <object id="51" name="torch 1" x="323.625" y="313.938" width="8.5" height="20.125"/>
   <object id="52" name="wall" x="0" y="512" width="412" height="12"/>
   <object id="53" name="wall" x="412" y="512" width="100" height="12"/>
-  <object id="56" name="goblin" x="176" y="32" width="16" height="16"/>
-  <object id="57" name="goblin" x="432" y="144" width="16" height="16"/>
-  <object id="58" name="goblin" x="444" y="236" width="16" height="16"/>
   <object id="59" name="goblin" x="156" y="272" width="16" height="16"/>
-  <object id="60" name="goblin" x="272" y="256" width="16" height="16"/>
-  <object id="61" name="goblin" x="64" y="444" width="16" height="16"/>
-  <object id="62" name="goblin" x="428" y="480" width="16" height="16"/>
-  <object id="63" name="goblin" x="428" y="352" width="16" height="16"/>
-  <object id="64" name="goblin" x="28" y="128" width="16" height="16"/>
-  <object id="65" name="goblin" x="148" y="176" width="16" height="16"/>
-  <object id="66" name="goblin" x="100" y="336" width="16" height="16"/>
-  <object id="67" name="goblin" x="20" y="288" width="16" height="16"/>
+  <object id="64" name="goblin" x="28" y="128" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="68" name="goblin2" x="272" y="400" width="16" height="16"/>
+  <object id="70" name="goblin2" x="144" y="176" width="16" height="16"/>
+  <object id="72" name="goblin2" x="96" y="384" width="16" height="16"/>
+  <object id="73" name="goblin" x="176" y="32" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="74" name="goblin" x="432" y="144" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="75" name="goblin" x="448" y="236" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="76" name="goblin" x="432" y="476" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="77" name="goblin" x="428" y="352" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="78" name="goblin" x="268" y="252" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="80" name="goblin" x="20" y="292" width="16" height="16">
+   <properties>
+    <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer id="6" name="obj tiles" width="32" height="32">
   <data encoding="csv">
@@ -181,8 +216,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,153,0,153,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,187,188,0,0,0,0,0,169,0,169,0,0,0,0,153,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,203,204,0,0,0,0,0,153,0,153,0,0,0,0,169,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,169,0,169,0,0,0,0,153,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,153,0,153,0,0,0,0,169,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,169,0,169,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,153,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,97,98,99,100,0,0,0,0,97,98,99,100,0,0,0,169,0,0,0,0,0,0,0,0,

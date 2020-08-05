@@ -5,6 +5,7 @@ import time
 import sys
 import npc
 
+pygame.init()
 
 class player:
 
@@ -124,6 +125,8 @@ class room:
 
         self.dialogue = False
 
+        self.event = False
+
     def load(self):
         tile = self.tmxdata.get_tile_image_by_gid
         for layer in self.tmxdata.visible_layers:
@@ -148,7 +151,14 @@ class room:
                                               int(tile_object.width*self.scale), int(tile_object.height*self.scale)))
 
             if tile_object.name == 'goblin':
-                self.sprites.append(npc.goblin(tile_object.x * self.scale, tile_object.y * self.scale))
+                try:
+                    self.sprites.append(npc.goblin(tile_object.x * self.scale, tile_object.y * self.scale, tile_object.dialogue))
+                except:
+                    self.sprites.append(npc.goblin(tile_object.x * self.scale, tile_object.y * self.scale, settings.defText))
+            
+            if tile_object.name == 'goblin2':
+                self.sprites.append(npc.goblin2(tile_object.x * self.scale, tile_object.y * self.scale))
+
                 
 
 
@@ -171,17 +181,27 @@ class room:
             self.sprites.append(arg)
 
     def update(self, playerRect):
-        #playerRect = [playerRect]
-        dialogue = False
-        for sprite in self.sprites:
-            sprite.update(self.walls, playerRect)
-            if sprite.dialogueBox.active:
-                dialogue = sprite.dialogueBox
-            
-                
-        #print(sprite.dialogueBox.active)
-        return dialogue
+        pause = False
+        allActivity = False
 
+        for sprite in self.sprites:
+            if self.event != False:
+                if self.event.id == "dialogue":
+                    pause = True
+
+            sprite.update(self.walls, playerRect, pause)
+
+            if sprite.dialogueBox.active:
+                allActivity = True
+                if self.event == False:
+                    self.event = sprite.dialogueBox
+        
+        if allActivity == False:
+            self.event = False
+
+
+    def returnEvent(self):
+        return self.event
 
 
 class roomGroup:
@@ -236,7 +256,7 @@ class game:
         self.useCam = True
         self.mapLayer = []
         self.spriteLayer = []
-        self.overLayer = []
+        self.dialogueLayer = []
         self.fightSceneBool = False
         self.new()
 
@@ -264,12 +284,18 @@ class game:
 
     def events(self):
         self.map.update()
-        dialogue = self.map.room.update(self.player.rect)
-        if dialogue != False:
-            self.overLayer.append(dialogue)
-        
-        self.player.move(self.map.room.returnCollision())
+        self.map.room.update(self.player.rect)
+        event = self.map.room.returnEvent()
+        self.dialogueLayer.clear()
+        if event != False:
+            if event.id == "dialogue":
+                self.dialogueLayer.append(event)
+        else:
+            self.player.move(self.map.room.returnCollision())
+
+
         self.cam.update(self.player)
+
         pass
 
     def fightScene(self):
@@ -291,7 +317,7 @@ class game:
             else:
                 self.win.blit(item.image, self.cam.apply(item))
 
-        for item in self.overLayer:
+        for item in self.dialogueLayer:
             self.win.blit(item.image, item.rect)
 
         
@@ -314,7 +340,7 @@ class game:
             pygame.display.update()
 
 
-pygame.init()
+
 
 
 game1 = game()

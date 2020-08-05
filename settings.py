@@ -1,5 +1,7 @@
 import pygame
 
+pygame.font.init()
+
 blue = (0, 0, 128)
 black = (0,0,0)
 white = (255,255,255)
@@ -30,20 +32,33 @@ dialogueBox1 = pygame.image.load('sample_assets/dialogueBox.png')
 
 interactionBtn = pygame.K_z
 
+font1 = pygame.font.Font('freesansbold.ttf', 24)
+
+defText = "Hi"
+
 class ticker:
     def __init__(self, buffer):
         self.buffer = buffer
-        self.done = True
+        self.done = False
         self.ticks = 0
+
+        self.lock = False
 
     def tick(self):
         if self.done:
-            self.done = False
+            if self.lock:
+                pass
+            else:
+                self.done = False
         else:
             self.ticks += 1
             if self.ticks > self.buffer - 1:
                 self.ticks = 0
                 self.done = True
+    
+    def reset(self):
+        self.done = False
+        self.ticks = 0
         #if self.done = False:
 
         #while x < self.buffer:
