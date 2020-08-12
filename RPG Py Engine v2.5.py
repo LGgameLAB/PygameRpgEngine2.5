@@ -189,12 +189,20 @@ class room:
                 if self.event.id == "dialogue":
                     pause = True
 
+                if self.event.id == "optionBox":
+                    pause = True
+
             sprite.update(self.walls, playerRect, pause)
 
             if sprite.dialogueBox.active:
                 allActivity = True
                 if self.event == False:
                     self.event = sprite.dialogueBox
+            
+            if sprite.optionBox.active:
+                allActivity = True
+                if self.event == False:
+                    self.event = sprite.optionBox
         
         if allActivity == False:
             self.event = False
@@ -288,7 +296,10 @@ class game:
         event = self.map.room.returnEvent()
         self.dialogueLayer.clear()
         if event != False:
+            #This seems wierd but may add new layer for optionbox situations
             if event.id == "dialogue":
+                self.dialogueLayer.append(event)
+            if event.id == "optionBox":
                 self.dialogueLayer.append(event)
         else:
             self.player.move(self.map.room.returnCollision())

@@ -27,10 +27,16 @@ gridHeight = winHeight / tileSize
 fps = 120
 buffer = 1/fps
 
-dialogueBox1 = pygame.image.load('sample_assets/dialogueBox.png')
+dialogueBox1 = 'sample_assets/dialogueBox.png'
+optionBox1 = 'sample_assets/optionBox.png'
 
+fightSceneOverlay1 = 'sample_assets/fightSceneOverlay1.png'
 
 interactionBtn = pygame.K_z
+
+scrollUpBtn = pygame.K_UP
+scrollDownBtn = pygame.K_DOWN
+menusBtn = pygame.K_z
 
 font1 = pygame.font.Font('freesansbold.ttf', 24)
 
@@ -59,8 +65,4 @@ class ticker:
     def reset(self):
         self.done = False
         self.ticks = 0
-        #if self.done = False:
 
-        #while x < self.buffer:
-        #    X += 1
-#goblinAnimationSet = {'u': [charImage], 'd': [charImage], 'l': [charImage], 'r': [charImage], 'fullArt': charImage}

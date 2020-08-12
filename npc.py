@@ -1,14 +1,15 @@
+import random
+
 import pygame
 
 import animations as anims
+import optionBox as opBox
 import settings as stgs
-
-import random
 
 
 class dialogue:
     def __init__(self, text):
-        self.image = stgs.dialogueBox1
+        self.image = pygame.image.load(stgs.dialogueBox1)
         self.rect = pygame.Rect(0, stgs.winHeight - self.image.get_height(), self.image.get_height(), self.image.get_width())
         self.active = False
 
@@ -20,7 +21,7 @@ class dialogue:
 
         self.typed = False
 
-        self.startBuffer = stgs.ticker(50)
+        self.startBuffer = stgs.ticker(20)
         self.startBuffer.lock = True
 
 
@@ -63,10 +64,13 @@ class npc:
         self.dialogueBox = dialogue(self.text)
         self.dialogueTick = stgs.ticker(8)
         self.clock = 0
+        self.optionBox = opBox.optionBox('yes', 'no', 'what', 'why', 'when', 'how', 'yeah', 'heck ya', 'lol   ')
+        self.optionTick = stgs.ticker(10)
 
     def update(self, walls, pRect, pause):
         if pause:
             self.dialogueBox.update()
+            self.optionBox.update()
         else:
             self.clock += 1
 
@@ -77,6 +81,7 @@ class npc:
 
             self.ticker1.tick()
             self.dialogueTick.tick()
+            self.optionTick.tick()
 
             if self.interactionType == 1:
                 if abs(pRect.centerx - self.rect.centerx) < stgs.tileSize + 2 and abs(pRect.centery - self.rect.centery) < stgs.tileSize + 2: 
@@ -84,10 +89,17 @@ class npc:
                     if self.dialogueTick.done:
                         if keys[stgs.interactionBtn]:
                             self.dialogueBox.active = True
-                            print('interacted')
 
             if self.interactionType == 2:
                 pass
+
+            if self.interactionType == 3:
+                if abs(pRect.centerx - self.rect.centerx) < stgs.tileSize + 2 and abs(pRect.centery - self.rect.centery) < stgs.tileSize + 2: 
+                    keys = pygame.key.get_pressed()
+                    if self.optionTick.done:
+                        if keys[stgs.interactionBtn]:
+                            self.optionBox.active = True
+                            print('yo')
 
             if self.moveType == 1:
                 if self.clock > 200:
@@ -176,7 +188,7 @@ def goblin2(x, y):
     gobDown = pygame.image.load('sample_assets/goblinDown.png')
     gobLeft = pygame.image.load('sample_assets/goblinLeft.png')
     gobRight = pygame.image.load('sample_assets/goblinRight.png')
-    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 2, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize, '')
+    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 3, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize, '')
 
 
 # class enemy:

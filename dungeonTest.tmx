@@ -168,7 +168,7 @@
   <object id="72" name="goblin2" x="96" y="384" width="16" height="16"/>
   <object id="73" name="goblin" x="176" y="32" width="16" height="16">
    <properties>
-    <property name="dialogue" value="watcha doin there"/>
+    <property name="dialogue" value="howdy there"/>
    </properties>
   </object>
   <object id="74" name="goblin" x="432" y="144" width="16" height="16">
