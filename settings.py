@@ -42,6 +42,8 @@ font1 = pygame.font.Font('freesansbold.ttf', 24)
 
 defText = "Hi"
 
+fightOptions = ['Attack', 'Items', 'Spare']
+
 class ticker:
     def __init__(self, buffer):
         self.buffer = buffer
@@ -65,4 +67,18 @@ class ticker:
     def reset(self):
         self.done = False
         self.ticks = 0
+
+statFormat = {"Health": '', "Level": '', "Speed": ''}
+
+class stats:
+    def __init__(self, *args):
+        global statFormat
+
+        self.stats = {}
+        x = 0
+        for k in statFormat:
+            self.stats[k] = args[x]
+            x += 1
+
+        self.attackList = []
 

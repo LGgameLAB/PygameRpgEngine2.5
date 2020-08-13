@@ -1,6 +1,10 @@
 import pygame
 
 import settings
+import optionBox as opBox
+
+knightStats = settings.stats(100, 2, 11)
+print(knightStats.stats)
 
 class fightScene:
 
@@ -14,6 +18,16 @@ class fightScene:
         self.turn = 1
 
     def run(self):
-        pass
+        if self.turn == 1:
+            if self.options.status == 'off':
+                self.giveOption()
 
+            elif self.options.status == 'pending':
+                pass
+
+            elif self.options.status == 'done':
+                pass
+    
+    def giveOption(self):
+        self.options = opBox.optionBox(settings.fightOptions)
         

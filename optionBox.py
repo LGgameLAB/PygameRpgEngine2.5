@@ -4,7 +4,7 @@ import settings
 
 class optionBox:
     def __init__(self, *args):
-        if len(args)> 1:
+        if len(args)> 0:
             self.args = args
 
         else:
@@ -28,12 +28,15 @@ class optionBox:
 
         self.setImage()
 
+        self.status = 'off'
+
     def setImage(self):
         self.image = pygame.image.load(settings.optionBox1)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.image.convert()
 
     def update(self):
+        self.status = 'pending'
         self.render()
 
         self.delay.tick()
@@ -54,6 +57,8 @@ class optionBox:
 
             if keys[settings.menusBtn]:
                 self.active = False
+                self.status = 'done'
+                self.result = index + 1
                 self.delay.reset()
     
     def render(self):

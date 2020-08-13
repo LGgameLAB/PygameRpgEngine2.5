@@ -64,7 +64,7 @@ class npc:
         self.dialogueBox = dialogue(self.text)
         self.dialogueTick = stgs.ticker(8)
         self.clock = 0
-        self.optionBox = opBox.optionBox('yes', 'no', 'what', 'why', 'when', 'how', 'yeah', 'heck ya', 'lol   ')
+        self.optionBox = opBox.optionBox('yes', 'no', 'what', 'why')
         self.optionTick = stgs.ticker(10)
 
     def update(self, walls, pRect, pause):
