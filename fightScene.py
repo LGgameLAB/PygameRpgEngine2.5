@@ -3,8 +3,6 @@ import pygame
 import settings
 import optionBox as opBox
 
-knightStats = settings.stats(100, 2, 11)
-print(knightStats.stats)
 
 class fightScene:
 

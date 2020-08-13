@@ -58,7 +58,7 @@ class optionBox:
             if keys[settings.menusBtn]:
                 self.active = False
                 self.status = 'done'
-                self.result = index + 1
+                self.result = self.index + 1
                 self.delay.reset()
     
     def render(self):
