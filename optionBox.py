@@ -43,19 +43,19 @@ class optionBox:
 
         if self.delay.done:
             keys = pygame.key.get_pressed()
-            if keys[settings.scrollUpBtn]:
+            if keys[settings.globalBtnSet['scrollUpBtn']]:
                 self.delay.reset()
                 self.index -= 1
                 if self.index < 0:
                     self.index = int(len(self.args) - 1)
-            elif keys[settings.scrollDownBtn]:
+            elif keys[settings.globalBtnSet['scrollDownBtn']]:
                 self.delay.reset()
                 self.index += 1
                 if self.index > int(len(self.args) - 1):
                     self.index = 0
 
 
-            if keys[settings.menusBtn]:
+            if keys[settings.globalBtnSet['menusBtn']]:
                 self.active = False
                 self.status = 'done'
                 self.result = self.index + 1

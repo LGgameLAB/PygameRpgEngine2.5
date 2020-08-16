@@ -34,7 +34,7 @@ class dialogue:
 
             if self.startBuffer.done:
                 keys = pygame.key.get_pressed()
-                if keys[stgs.interactionBtn]:
+                if keys[stgs.globalBtnSet['interactionBtn']]:
                     self.active = False
                     self.startBuffer.reset()
 
@@ -51,6 +51,8 @@ class npc:
         self.x, self.y = x, y
         self.width, self.height = w, h
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.fullArt = imgSheet["fullArt"]
+        self.fightRect = pygame.Rect(800, 320, self.fullArt.get_width(), self.fullArt.get_height())
         self.framed = True
         self.setAnimations = anims.animation(self.imgSheet, self.dir, 0.2, self.imgSheet['startFrame'])
         self.setAnimation()
@@ -62,10 +64,13 @@ class npc:
 
         self.text = text #"Watcha bee doin' ouwt by yershelf?!"
         self.dialogueBox = dialogue(self.text)
-        self.dialogueTick = stgs.ticker(8)
+        self.interTick = stgs.ticker(8)
         self.clock = 0
         self.optionBox = opBox.optionBox('yes', 'no', 'what', 'why')
         self.optionTick = stgs.ticker(10)
+
+        self.fightActive = False
+        self.id = "battleSprite"
 
     def update(self, walls, pRect, pause):
         if pause:
@@ -80,26 +85,31 @@ class npc:
             self.setAnimation()
 
             self.ticker1.tick()
-            self.dialogueTick.tick()
+            self.interTick.tick()
             self.optionTick.tick()
 
             if self.interactionType == 1:
                 if abs(pRect.centerx - self.rect.centerx) < stgs.tileSize + 2 and abs(pRect.centery - self.rect.centery) < stgs.tileSize + 2: 
                     keys = pygame.key.get_pressed()
-                    if self.dialogueTick.done:
-                        if keys[stgs.interactionBtn]:
+                    if self.interTick.done:
+                        if keys[stgs.globalBtnSet['interactionBtn']]:
                             self.dialogueBox.active = True
 
             if self.interactionType == 2:
+                if abs(pRect.centerx - self.rect.centerx) < stgs.tileSize + 2 and abs(pRect.centery - self.rect.centery) < stgs.tileSize + 2: 
+                    keys = pygame.key.get_pressed()
+                    if self.interTick.done:
+                        if keys[stgs.globalBtnSet['interactionBtn']]:
+                            self.fightActive = True
                 pass
 
             if self.interactionType == 3:
                 if abs(pRect.centerx - self.rect.centerx) < stgs.tileSize + 2 and abs(pRect.centery - self.rect.centery) < stgs.tileSize + 2: 
                     keys = pygame.key.get_pressed()
                     if self.optionTick.done:
-                        if keys[stgs.interactionBtn]:
+                        if keys[stgs.globalBtnSet['interactionBtn']]:
                             self.optionBox.active = True
-                            print('yo')
+                            
 
             if self.moveType == 1:
                 if self.clock > 200:

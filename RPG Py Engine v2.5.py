@@ -4,6 +4,7 @@ import settings
 import time
 import sys
 import npc
+import fightScene as fs
 
 pygame.init()
 
@@ -15,10 +16,11 @@ class player:
         self.y = int(startY)
         self.dir = startDir
         self.vel = speed
-        self.width, self.height =  32, 64    #settings.tileSize, settings.tileSize
+        self.width, self.height =  56, 64    #settings.tileSize, settings.tileSize
         self.rect = pygame.Rect(
             self.x, self.y, self.width, self.height)
         self.fullArt = self.animations['fullArt']
+        self.fightRect = pygame.Rect(170, 320, self.fullArt.get_width(), self.fullArt.get_height())
         self.framed = False
         self.animationTick = settings.ticker(animationBuffer)
 
@@ -29,23 +31,24 @@ class player:
 
         clicked = False
         
+        keySet = settings.globalBtnSet
 
-        if keys[pygame.K_UP]:
+        if keys[keySet['u']]:
             self.y -= self.vel
             self.dir = 'u'
             self.checkCollide(walls)
             clicked = True
-        if keys[pygame.K_DOWN]:
+        if keys[keySet['d']]:
             self.y += self.vel
             self.dir = 'd'
             self.checkCollide(walls)
             clicked = True
-        if keys[pygame.K_RIGHT]:
+        if keys[keySet['r']]:
             self.x += self.vel
             self.dir = 'r'
             self.checkCollide(walls)
             clicked = True
-        if keys[pygame.K_LEFT]:
+        if keys[keySet['l']]:
             self.x -= self.vel
             self.dir = 'l'
             self.checkCollide(walls)
@@ -203,6 +206,12 @@ class room:
                 allActivity = True
                 if self.event == False:
                     self.event = sprite.optionBox
+            
+            if sprite.fightActive:
+                allActivity = True
+                if self.event == False:
+                    self.event = sprite
+            
         
         if allActivity == False:
             self.event = False
@@ -264,6 +273,7 @@ class game:
         self.useCam = True
         self.mapLayer = []
         self.spriteLayer = []
+        self.fightSceneLayer = []
         self.dialogueLayer = []
         self.fightSceneBool = False
         self.new()
@@ -275,7 +285,8 @@ class game:
         room1 = room("dungeonTest.tmx", settings.tileSize)
         room2 = room("farm1.4.tmx", settings.tileSize)
         self.map.addRooms(room1, room2)
-        charImagePath = 'LukeDaWizard.png'
+        #charImagePath = 'sample_assets/LukeDaWizard.png'
+        charImagePath = 'sample_assets/LukeDaKnight.png'
         charImage = pygame.image.load(charImagePath)
         charAnimation = {'u': [charImage], 'd': [charImage], 'l': [
             charImage], 'r': [charImage], 'fullArt': charImage}
@@ -301,6 +312,10 @@ class game:
                 self.dialogueLayer.append(event)
             if event.id == "optionBox":
                 self.dialogueLayer.append(event)
+            if event.id == "battleSprite":
+                self.fightScene = fs.fightScene(self.player, event)
+                self.fightSceneLayer.append(self.fightScene)
+                self.fightScene.update()
         else:
             self.player.move(self.map.room.returnCollision())
 
@@ -309,12 +324,6 @@ class game:
 
         pass
 
-    def fightScene(self):
-        self.useCam = False
-        self.fightSceneBool = True
-        while self.fightSceneBool:
-
-            pass
 
     def rendScreen(self):
         self.win.fill(settings.bgColor)
@@ -327,6 +336,15 @@ class game:
                 self.win.blit(item.image, self.cam.apply(item), item.frame)
             else:
                 self.win.blit(item.image, self.cam.apply(item))
+
+        for item in self.fightSceneLayer:
+            #if item.framed:
+            #    self.win.blit(item.image, item.fightRect, item.frame)
+            #else:
+            #    self.win.blit(item.image, item.fightRect)
+
+
+            self.win.blit(item.image, item.rect)
 
         for item in self.dialogueLayer:
             self.win.blit(item.image, item.rect)

@@ -26,17 +26,17 @@ gridHeight = winHeight / tileSize
 
 fps = 120
 buffer = 1/fps
-
 dialogueBox1 = 'sample_assets/dialogueBox.png'
 optionBox1 = 'sample_assets/optionBox.png'
 
-fightSceneOverlay1 = 'sample_assets/fightSceneOverlay1.png'
+fightSceneOverlay1 = 'sample_assets/fightSceneOverlay1.jpg'
 
-interactionBtn = pygame.K_z
+globalBtnSet = {'u' : pygame.K_UP, 'd' : pygame.K_DOWN, 'l' : pygame.K_LEFT, 'r' : pygame.K_RIGHT, 'interactionBtn' : pygame.K_z, 'scrollUpBtn' : pygame.K_UP, 'scrollDownBtn' : pygame.K_DOWN, 'menusBtn' : pygame.K_z}
 
-scrollUpBtn = pygame.K_UP
-scrollDownBtn = pygame.K_DOWN
-menusBtn = pygame.K_z
+#interactionBtn = pygame.K_z
+
+##scrollDownBtn = pygame.K_DOWN
+#menusBtn = pygame.K_z
 
 font1 = pygame.font.Font('freesansbold.ttf', 24)
 
