@@ -16,7 +16,13 @@ class fightScene:
         self.side1Rect = pygame.Rect(0, 0, settings.winWidth/2, settings.winHeight)
         self.side2Rect = pygame.Rect(settings.winWidth/2, 0, settings.winWidth/2, settings.winHeight)
 
-        self.turn = 0
+        self.turn = 1
+        self.stage = 1
+
+        self.giveOption()
+
+        self.delay = settings.ticker(20)
+        self.delay.lock = True
 
     def update(self):
         self.image = pygame.image.load(settings.fightSceneOverlay1)
@@ -27,17 +33,34 @@ class fightScene:
         for sprite in self.sprites2:
             self.image.blit(sprite.fullArt, (self.side2Rect.centerx - sprite.rect.width/2, self.side2Rect.centery - sprite.rect.height/2))
 
-
-        if self.turn == 1:
-            if self.options.status == 'off':
-                self.giveOption()
-
-            elif self.options.status == 'pending':
-                pass
-
-            elif self.options.status == 'done':
-                pass
-    
-    def giveOption(self):
-        self.options = opBox.optionBox(settings.fightOptions)
         
+        self.delay.tick()
+
+        if self.delay.done:
+            if self.turn == 1:
+                if self.options.status == 'pending':
+                    pass
+
+                elif self.options.status == 'done':
+                    if self.options.result == 0:
+                        
+
+                        
+        self.options.update()
+
+    def giveOption(self):
+        if self.stage == 1:
+            self.options = opBox.optionBox(settings.fightOptions)
+            #self.options.loadList(settings.fightOptions)
+
+        elif self.stage == 2:
+            stage2Options = []
+
+            for item in self.sprites1[0].stats.inventory.items:
+                if item.id == 'weapon':
+                    stage2Options.append(item.name)
+
+            self.options = opBox.optionBox(stage2Options)
+            #self.options.loadList()
+
+        self.options.setPos('bottomR')

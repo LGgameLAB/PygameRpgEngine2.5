@@ -20,11 +20,13 @@ class player:
         self.rect = pygame.Rect(
             self.x, self.y, self.width, self.height)
         self.fullArt = self.animations['fullArt']
-        self.fightRect = pygame.Rect(170, 320, self.fullArt.get_width(), self.fullArt.get_height())
         self.framed = False
         self.animationTick = settings.ticker(animationBuffer)
-
+        
         self.setAnimation()
+
+        self.stats = settings.stats(20, 1, 0, 10, 10)
+        self.stats.addInventory(settings.basicSword())
 
     def move(self, walls):
         keys = pygame.key.get_pressed()
@@ -276,6 +278,7 @@ class game:
         self.fightSceneLayer = []
         self.dialogueLayer = []
         self.fightSceneBool = False
+        self.fightScene = 0
         self.new()
 
     def new(self):
@@ -287,9 +290,11 @@ class game:
         self.map.addRooms(room1, room2)
         #charImagePath = 'sample_assets/LukeDaWizard.png'
         charImagePath = 'sample_assets/LukeDaKnight.png'
+        charFullArtPath = 'sample_assets/knightFullArt.png'
         charImage = pygame.image.load(charImagePath)
+        charFullArt = pygame.image.load(charFullArtPath)
         charAnimation = {'u': [charImage], 'd': [charImage], 'l': [
-            charImage], 'r': [charImage], 'fullArt': charImage}
+            charImage], 'r': [charImage], 'fullArt': charFullArt}
         self.player = player(
             self.map.room.pStartX, self.map.room.pStartY, 'r', charAnimation, 4, 10)
 
@@ -312,10 +317,20 @@ class game:
                 self.dialogueLayer.append(event)
             if event.id == "optionBox":
                 self.dialogueLayer.append(event)
+                if event.subMenuActive:
+                    for sprite in event.returnMenu():
+                        self.dialogueLayer.append(sprite)
             if event.id == "battleSprite":
-                self.fightScene = fs.fightScene(self.player, event)
-                self.fightSceneLayer.append(self.fightScene)
-                self.fightScene.update()
+                if len(self.fightSceneLayer) > 0:
+                    self.fightSceneLayer.clear()
+                    self.fightSceneLayer.append(self.fightScene)
+                    self.fightScene.update()
+                    self.dialogueLayer.append(self.fightScene.options)
+                else:
+                    self.fightScene = fs.fightScene(self.player, event)
+                    self.fightSceneLayer.append(self.fightScene)
+                    self.fightScene.update()
+                    
         else:
             self.player.move(self.map.room.returnCollision())
 

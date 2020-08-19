@@ -52,7 +52,6 @@ class npc:
         self.width, self.height = w, h
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.fullArt = imgSheet["fullArt"]
-        self.fightRect = pygame.Rect(800, 320, self.fullArt.get_width(), self.fullArt.get_height())
         self.framed = True
         self.setAnimations = anims.animation(self.imgSheet, self.dir, 0.2, self.imgSheet['startFrame'])
         self.setAnimation()
@@ -66,7 +65,7 @@ class npc:
         self.dialogueBox = dialogue(self.text)
         self.interTick = stgs.ticker(8)
         self.clock = 0
-        self.optionBox = opBox.optionBox('yes', 'no', 'what', 'why')
+        self.optionBox = opBox.optionBox({'1': {'3': {'7': 'hi', '8': "Whats  up"}, '4': 'aloha'}, '2':{'5': 'hola', '6': 'ola'}})  #'hola'})
         self.optionTick = stgs.ticker(10)
 
         self.fightActive = False
