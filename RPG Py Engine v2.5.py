@@ -25,8 +25,9 @@ class player:
         
         self.setAnimation()
 
-        self.stats = settings.stats(20, 1, 0, 10, 10)
-        self.stats.addInventory(settings.basicSword())
+        self.stats = settings.stats(20, 20, 1, 0,)
+        self.stats.inventory.addItems(settings.basicSword())
+        self.stats.inventory.addItems(settings.basicJavelin())
 
     def move(self, walls):
         keys = pygame.key.get_pressed()
@@ -123,7 +124,7 @@ class room:
 
         self.image = pygame.Surface((self.width, self.height))
         self.load()
-        self.image.convert()
+        self.image#.convert()
 
         self.x = 0
         self.y = 0
@@ -278,12 +279,12 @@ class game:
         self.fightSceneLayer = []
         self.dialogueLayer = []
         self.fightSceneBool = False
-        self.fightScene = 0
+        self.fightScene = False
         self.new()
 
     def new(self):
         self.win = pygame.display.set_mode(
-            (settings.winWidth, settings.winHeight))
+            (settings.winWidth, settings.winHeight), pygame.RESIZABLE)
         self.map = roomGroup()
         room1 = room("dungeonTest.tmx", settings.tileSize)
         room2 = room("farm1.4.tmx", settings.tileSize)
@@ -311,25 +312,32 @@ class game:
         self.map.room.update(self.player.rect)
         event = self.map.room.returnEvent()
         self.dialogueLayer.clear()
+        self.fightSceneLayer.clear()
         if event != False:
             #This seems wierd but may add new layer for optionbox situations
             if event.id == "dialogue":
                 self.dialogueLayer.append(event)
+
             if event.id == "optionBox":
                 self.dialogueLayer.append(event)
                 if event.subMenuActive:
                     for sprite in event.returnMenu():
                         self.dialogueLayer.append(sprite)
+
             if event.id == "battleSprite":
-                if len(self.fightSceneLayer) > 0:
-                    self.fightSceneLayer.clear()
+                if self.fightScene != False:
                     self.fightSceneLayer.append(self.fightScene)
                     self.fightScene.update()
                     self.dialogueLayer.append(self.fightScene.options)
+                    if self.fightScene.options.subMenuActive:
+                        for sprite in self.fightScene.options.returnMenu():
+                            self.dialogueLayer.append(sprite)
                 else:
                     self.fightScene = fs.fightScene(self.player, event)
                     self.fightSceneLayer.append(self.fightScene)
                     self.fightScene.update()
+            else:
+                self.fightScene = False
                     
         else:
             self.player.move(self.map.room.returnCollision())
@@ -369,7 +377,9 @@ class game:
         pygame.display.set_caption(settings.winTitle)
         run = True
 
+        
         while run:
+            
             time.sleep(self.buffer)
 
             # Window exit checker
@@ -377,6 +387,13 @@ class game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
+                
+                if event.type == pygame.VIDEORESIZE:
+                    self.win = pygame.display.set_mode((event.w, event.h),
+                        pygame.RESIZABLE)
+                    
+                    settings.winWidth = event.w
+                    settings.winHeight = event.h
 
             self.events()
             self.rendScreen()

@@ -16,34 +16,55 @@ class dialogue:
         self.id = "dialogue"
 
         self.strText = text
+        self.listText = self.splice(self.strText)
+
         self.font = stgs.font1
-        self.text = self.font.render(self.strText, True , stgs.white)
+        #self.text = self.font.render(self.strText, True , stgs.white)
 
         self.typed = False
+        self.typedText = ""
 
         self.startBuffer = stgs.ticker(20)
         self.startBuffer.lock = True
 
+    def splice(self, string): 
+        list1=[] 
+        list1[:0]=string 
+        return list1 
 
     def update(self):
+        self.rect = pygame.Rect(0, stgs.winHeight - self.image.get_height(), self.image.get_height(), self.image.get_width())
+
+        self.image = pygame.image.load(stgs.dialogueBox1)
+        
         if self.active:
             self.startBuffer.tick()
             if not self.typed:
-                self.image.blit(self.text, (50, 30))
-                self.typed = True
+                self.typedText = self.typedText +  self.listText[len(self.typedText)]
+                
+                if self.typedText == self.strText:
+                    self.typed = True
+
+            text = self.font.render(self.typedText, True , stgs.white)
+            self.image.blit(text, (50, 30))
+                
+                #self.typed = True
 
             if self.startBuffer.done:
                 keys = pygame.key.get_pressed()
                 if keys[stgs.globalBtnSet['interactionBtn']]:
                     self.active = False
                     self.startBuffer.reset()
+                    self.typedText = ""
+                    self.typed = False
+                    self.image = pygame.image.load(stgs.dialogueBox1)
 
                 
 
 class npc:
     def __init__(self, name, stats, moveType, interactionType, imgSheet, x, y, w, h, text):
         self.name = name
-        self.stats = stats
+        self.stats = stgs.stats(stats)
         self.moveType = moveType
         self.interactionType = interactionType
         self.imgSheet = imgSheet
@@ -188,7 +209,7 @@ def goblin(x, y, text):
     gobDown = pygame.image.load('sample_assets/goblinDown.png')
     gobLeft = pygame.image.load('sample_assets/goblinLeft.png')
     gobRight = pygame.image.load('sample_assets/goblinRight.png')
-    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 1, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize, text)
+    return npc('goblin', [12, 12, 1, 20], 1, 1, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize, text)
 
 #Fighting goblin
 def goblin2(x, y):
@@ -197,7 +218,7 @@ def goblin2(x, y):
     gobDown = pygame.image.load('sample_assets/goblinDown.png')
     gobLeft = pygame.image.load('sample_assets/goblinLeft.png')
     gobRight = pygame.image.load('sample_assets/goblinRight.png')
-    return npc('goblin', {'str': 11, 'dex': 12, 'wis': 9}, 1, 3, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize, '')
+    return npc('goblin', [12, 12, 1, 20], 1, 2, {'u': gobUp, 'd': gobDown, 'l': gobLeft, 'r': gobRight, 'startFrame': 6, 'fullArt': gobSamp}, x, y, stgs.tileSize, stgs.tileSize, '')
 
 
 # class enemy:

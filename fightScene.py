@@ -3,6 +3,18 @@ import pygame
 import settings
 import optionBox as opBox
 
+class healthBar:
+    def __init__(self, entityStats, entityPos):
+        self.total = entityStats.stats[settings.maxHpKey]
+        self.current = entityStats.stats[settings.healthKey]
+        self.pos = entityPos
+
+    def update(self):
+        pass
+
+    def render(self):
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], self.total*2 + 4, 12)
+        self.image = pygame.surface.Surface((self.rect.width, self.rect.height))
 
 class fightScene:
 
@@ -13,6 +25,7 @@ class fightScene:
         self.sprites1 = [side1]
         self.sprites2 = [side2]
 
+        self.player = self.sprites1[0]
         self.side1Rect = pygame.Rect(0, 0, settings.winWidth/2, settings.winHeight)
         self.side2Rect = pygame.Rect(settings.winWidth/2, 0, settings.winWidth/2, settings.winHeight)
 
@@ -28,10 +41,10 @@ class fightScene:
         self.image = pygame.image.load(settings.fightSceneOverlay1)
 
         for sprite in self.sprites1:
-            self.image.blit(sprite.fullArt, (self.side1Rect.centerx - sprite.rect.width/2, self.side1Rect.centery - sprite.rect.height/2))
+            self.image.blit(sprite.fullArt, (self.side1Rect.centerx - sprite.fullArt.get_width()/2, self.side1Rect.centery - sprite.fullArt.get_height()/2))
 
         for sprite in self.sprites2:
-            self.image.blit(sprite.fullArt, (self.side2Rect.centerx - sprite.rect.width/2, self.side2Rect.centery - sprite.rect.height/2))
+            self.image.blit(sprite.fullArt, (self.side2Rect.centerx - sprite.fullArt.get_width()/2, self.side2Rect.centery - sprite.fullArt.get_height()/2))
 
         
         self.delay.tick()
@@ -42,25 +55,41 @@ class fightScene:
                     pass
 
                 elif self.options.status == 'done':
-                    if self.options.result == 0:
+                    if self.options.result.id == "attack":
+                        self.sprites2[0].stats.recvHit(self.options.result)
+
+                    elif self.options.result.id == "run":
+                        self.sprites2[0].fightActive = False
+
+                    print(self.options.result)
+                    self.turn += 2
                         
 
-                        
         self.options.update()
 
     def giveOption(self):
-        if self.stage == 1:
-            self.options = opBox.optionBox(settings.fightOptions)
-            #self.options.loadList(settings.fightOptions)
+        fightSceneOptions = {}
+        attackOptions = {}
+        itemOptions = {}
 
-        elif self.stage == 2:
-            stage2Options = []
+        for item in self.player.stats.inventory.items:
+            if item.id == "weapon":
+                attackOptions[item.name] = item.attack
+            else:
+                itemOptions[item.name] = item.effect
 
-            for item in self.sprites1[0].stats.inventory.items:
-                if item.id == 'weapon':
-                    stage2Options.append(item.name)
+        for option in settings.fightOptions:
+            if option == "Attack":
+                fightSceneOptions[option] = attackOptions
+            
+            elif option == "Items":
+                fightSceneOptions[option] = itemOptions
+            
+            elif option == "Run":
+                fightSceneOptions[option] = settings.run()
+            else:
+                fightSceneOptions[option] = '??'
 
-            self.options = opBox.optionBox(stage2Options)
-            #self.options.loadList()
-
+        self.options = opBox.optionBox(fightSceneOptions)
+    
         self.options.setPos('bottomR')

@@ -91,12 +91,12 @@ class optionBox:
             if self.delay.done:
                 keys = pygame.key.get_pressed()
                 if keys[settings.globalBtnSet['scrollUpBtn']]:
-                    self.delay.reset()
+                    self.delay.reset(5)
                     self.index -= 1
                     if self.index < 0:
                         self.index = int(len(self.args) - 1)
                 elif keys[settings.globalBtnSet['scrollDownBtn']]:
-                    self.delay.reset()
+                    self.delay.reset(5)
                     self.index += 1
                     if self.index > int(len(self.args) - 1):
                         self.index = 0
@@ -124,7 +124,7 @@ class optionBox:
                         self.active = False
                         self.result = self.index
                         self.status = 'done'
-                    self.delay.reset()
+                    self.delay.reset(5)
                 
                 if keys[settings.globalBtnSet['menusBack']]:
                     self.active = False
@@ -175,13 +175,17 @@ class optionBox:
                 return menu.sprites
 
     def getWidth(self):
-        charCount = 0
-        for arg in self.args:
-            if len(arg) > charCount:
-                charCount = max(charCount, len(arg))
+        longestArg = ''
+        if len(self.args) > 0:
+            for arg in self.args:
+                if len(arg) > len(longestArg):
+                    longestArg = arg
+                
+
         
-        self.width = 24*(charCount + 1)
-    
+            self.width = self.font.size(longestArg)[0] + 86
+        else:
+            self.width = 0
     def setPos(self, pos):
         if pos == 'bottomR':
             self.startX = settings.winWidth - self.width
