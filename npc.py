@@ -10,7 +10,10 @@ import settings as stgs
 class dialogue:
     def __init__(self, text):
         self.image = pygame.image.load(stgs.dialogueBox1)
-        self.rect = pygame.Rect(0, stgs.winHeight - self.image.get_height(), self.image.get_height(), self.image.get_width())
+        self.width = stgs.dialogueBoxSize[0]
+        self.height = stgs.dialogueBoxSize[1]
+        self.rect = pygame.Rect(0, stgs.winHeight - self.height, self.width, self.height)
+        self.image = pygame.transform.scale(self.image, (self.rect[2], self.rect[3]))
         self.active = False
 
         self.id = "dialogue"
@@ -33,9 +36,7 @@ class dialogue:
         return list1 
 
     def update(self):
-        self.rect = pygame.Rect(0, stgs.winHeight - self.image.get_height(), self.image.get_height(), self.image.get_width())
-
-        self.image = pygame.image.load(stgs.dialogueBox1)
+        self.clearImg()
         
         if self.active:
             self.startBuffer.tick()
@@ -57,9 +58,15 @@ class dialogue:
                     self.startBuffer.reset()
                     self.typedText = ""
                     self.typed = False
-                    self.image = pygame.image.load(stgs.dialogueBox1)
+                    self.clearImg()
+                    
 
-                
+    def clearImg(self):
+        self.width = stgs.dialogueBoxSize[0]
+        self.height = stgs.dialogueBoxSize[1]
+        self.rect = pygame.Rect(0, stgs.winHeight - self.height, self.width, self.height)
+        self.image = pygame.image.load(stgs.dialogueBox1)
+        self.image = pygame.transform.scale(self.image, (self.rect[2], self.rect[3]))
 
 class npc:
     def __init__(self, name, stats, moveType, interactionType, imgSheet, x, y, w, h, text):

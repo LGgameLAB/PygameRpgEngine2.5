@@ -394,6 +394,8 @@ class game:
                     
                     settings.winWidth = event.w
                     settings.winHeight = event.h
+                    settings.dialogueBoxSize = (event.w, int(event.h/4))
+
 
             self.events()
             self.rendScreen()

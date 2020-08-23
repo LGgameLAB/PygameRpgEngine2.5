@@ -28,6 +28,7 @@ fps = 120
 buffer = 1/fps
 
 dialogueBox1 = 'sample_assets/dialogueBox.png'
+dialogueBoxSize = (winWidth, int(winHeight/4))
 
 optionBox1 = 'sample_assets/optionBox.png'
 
