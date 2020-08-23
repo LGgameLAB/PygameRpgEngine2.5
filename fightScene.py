@@ -7,14 +7,16 @@ class healthBar:
     def __init__(self, entityStats, entityPos):
         self.total = entityStats.stats[settings.maxHpKey]
         self.current = entityStats.stats[settings.healthKey]
-        self.pos = entityPos
+        self.pos = [entityPos[0], entityPos[1] + 10]
 
     def update(self):
-        pass
+        self.render()
 
     def render(self):
         self.rect = pygame.Rect(self.pos[0], self.pos[1], self.total*2 + 4, 12)
+        self.healthLine = pygame.Rect(self.pos[0] + 2, self.pos[1] + 2, self.current, 8)
         self.image = pygame.surface.Surface((self.rect.width, self.rect.height))
+        pygame.draw.rect(self.image, settings.green, (self.healthLine))
 
 class fightScene:
 
@@ -37,11 +39,17 @@ class fightScene:
         self.delay = settings.ticker(20)
         self.delay.lock = True
 
+        self.healthBars = []
+
     def update(self):
+        self.healthBars.clear()
+
         self.image = pygame.image.load(settings.fightSceneOverlay1)
 
         for sprite in self.sprites1:
-            self.image.blit(sprite.fullArt, (self.side1Rect.centerx - sprite.fullArt.get_width()/2, self.side1Rect.centery - sprite.fullArt.get_height()/2))
+            pos = (self.side1Rect.centerx - sprite.fullArt.get_width()/2, self.side1Rect.centery - sprite.fullArt.get_height()/2)
+            self.image.blit(sprite.fullArt, pos)
+            self.healthBars.append(healthBar(sprite.stats, pos)) 
 
         for sprite in self.sprites2:
             self.image.blit(sprite.fullArt, (self.side2Rect.centerx - sprite.fullArt.get_width()/2, self.side2Rect.centery - sprite.fullArt.get_height()/2))

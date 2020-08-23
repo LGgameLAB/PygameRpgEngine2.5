@@ -56,9 +56,10 @@ class dialogue:
                 if keys[stgs.globalBtnSet['interactionBtn']]:
                     self.active = False
                     self.startBuffer.reset()
-                    self.typedText = ""
-                    self.typed = False
-                    self.clearImg()
+                    if stgs.retype:
+                        self.typedText = ""
+                        self.typed = False
+                        self.clearImg()
                     
 
     def clearImg(self):
@@ -86,7 +87,7 @@ class npc:
         self.ticker1 = stgs.ticker(5)
         self.dirs = ['u', 'd', 'l', 'r']
         self.moving = False
-        self.vel = 1
+        self.vel = 2
         self.dist = 0
 
         self.text = text #"Watcha bee doin' ouwt by yershelf?!"
@@ -101,8 +102,11 @@ class npc:
 
     def update(self, walls, pRect, pause):
         if pause:
-            self.dialogueBox.update()
-            self.optionBox.update()
+            if self.dialogueBox.active:
+                self.dialogueBox.update()
+
+            if self.optionBox.active:
+                self.optionBox.update()
         else:
             self.clock += 1
 

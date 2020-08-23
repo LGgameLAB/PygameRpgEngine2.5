@@ -19,23 +19,26 @@ winWidth, winHeight = 1024, 768
 centerX, centerY = winWidth/2, winHeight/2
 winTitle = "RPG Engine v2.5"
 bgColor = blue
+winResizeable = False
+fullScreenActive = True
 
 tileSize = 64
 gridWidth = winWidth / tileSize
 gridHeight = winHeight / tileSize
 
-fps = 120
+fps = 60
 buffer = 1/fps
 
 dialogueBox1 = 'sample_assets/dialogueBox.png'
 dialogueBoxSize = (winWidth, int(winHeight/4))
+retype = True
 
 optionBox1 = 'sample_assets/optionBox.png'
 
 fightSceneOverlay1 = 'sample_assets/fightSceneOverlay1.jpg'
 
 globalBtnSet = {'u' : pygame.K_UP, 'd' : pygame.K_DOWN, 'l' : pygame.K_LEFT, 'r' : pygame.K_RIGHT, 'interactionBtn' : pygame.K_z,
-     'scrollUpBtn' : pygame.K_UP, 'scrollDownBtn' : pygame.K_DOWN, 'menusBtn' : pygame.K_z, 'menusBack' : pygame.K_x}
+     'scrollUpBtn' : pygame.K_UP, 'scrollDownBtn' : pygame.K_DOWN, 'menusBtn' : pygame.K_z, 'menusBack' : pygame.K_x, 'fullScreen' : pygame.K_f}
 
 #interactionBtn = pygame.K_z
 

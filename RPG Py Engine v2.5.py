@@ -8,6 +8,7 @@ import fightScene as fs
 
 pygame.init()
 
+
 class player:
 
     def __init__(self, startX, startY, startDir, animations, speed, animationBuffer):
@@ -16,13 +17,13 @@ class player:
         self.y = int(startY)
         self.dir = startDir
         self.vel = speed
-        self.width, self.height =  56, 64    #settings.tileSize, settings.tileSize
+        self.width, self.height = 56, 64  # settings.tileSize, settings.tileSize
         self.rect = pygame.Rect(
             self.x, self.y, self.width, self.height)
         self.fullArt = self.animations['fullArt']
         self.framed = False
         self.animationTick = settings.ticker(animationBuffer)
-        
+
         self.setAnimation()
 
         self.stats = settings.stats(20, 20, 1, 0,)
@@ -33,7 +34,7 @@ class player:
         keys = pygame.key.get_pressed()
 
         clicked = False
-        
+
         keySet = settings.globalBtnSet
 
         if keys[keySet['u']]:
@@ -124,7 +125,7 @@ class room:
 
         self.image = pygame.Surface((self.width, self.height))
         self.load()
-        self.image#.convert()
+        self.image  # .convert()
 
         self.x = 0
         self.y = 0
@@ -158,29 +159,28 @@ class room:
 
             if tile_object.name == 'goblin':
                 try:
-                    self.sprites.append(npc.goblin(tile_object.x * self.scale, tile_object.y * self.scale, tile_object.dialogue))
+                    self.sprites.append(npc.goblin(
+                        tile_object.x * self.scale, tile_object.y * self.scale, tile_object.dialogue))
                 except:
-                    self.sprites.append(npc.goblin(tile_object.x * self.scale, tile_object.y * self.scale, settings.defText))
-            
+                    self.sprites.append(npc.goblin(
+                        tile_object.x * self.scale, tile_object.y * self.scale, settings.defText))
+
             if tile_object.name == 'goblin2':
-                self.sprites.append(npc.goblin2(tile_object.x * self.scale, tile_object.y * self.scale))
+                self.sprites.append(npc.goblin2(
+                    tile_object.x * self.scale, tile_object.y * self.scale))
 
-                
-
-
-    #def wallOffset(self, offset):
+    # def wallOffset(self, offset):
     #    print(self.walls)
     #    for wall in self.walls:
     #        wall = wall.move(offset)
+
     def returnCollision(self):
         spriteRects = []
         for sprite in self.sprites:
             spriteRects.append(sprite.rect)
-        
+
         collision = self.walls + spriteRects
         return collision
-
-
 
     def loadSprites(self, *args):
         for arg in args:
@@ -198,27 +198,28 @@ class room:
                 if self.event.id == "optionBox":
                     pause = True
 
+                if self.event.id == "battleSprite":
+                    pause = True
+
             sprite.update(self.walls, playerRect, pause)
 
             if sprite.dialogueBox.active:
                 allActivity = True
                 if self.event == False:
                     self.event = sprite.dialogueBox
-            
+
             if sprite.optionBox.active:
                 allActivity = True
                 if self.event == False:
                     self.event = sprite.optionBox
-            
+
             if sprite.fightActive:
                 allActivity = True
                 if self.event == False:
                     self.event = sprite
-            
-        
+
         if allActivity == False:
             self.event = False
-
 
     def returnEvent(self):
         return self.event
@@ -280,11 +281,18 @@ class game:
         self.dialogueLayer = []
         self.fightSceneBool = False
         self.fightScene = False
+        self.fullScreen = False
+
+        if settings.winResizeable:
+            self.win = pygame.display.set_mode(
+                (settings.winWidth, settings.winHeight), pygame.RESIZABLE)
+        else:
+            self.win = pygame.display.set_mode(
+                (settings.winWidth, settings.winHeight))
+
         self.new()
 
     def new(self):
-        self.win = pygame.display.set_mode(
-            (settings.winWidth, settings.winHeight), pygame.RESIZABLE)
         self.map = roomGroup()
         room1 = room("dungeonTest.tmx", settings.tileSize)
         room2 = room("farm1.4.tmx", settings.tileSize)
@@ -297,12 +305,11 @@ class game:
         charAnimation = {'u': [charImage], 'd': [charImage], 'l': [
             charImage], 'r': [charImage], 'fullArt': charFullArt}
         self.player = player(
-            self.map.room.pStartX, self.map.room.pStartY, 'r', charAnimation, 4, 10)
+            self.map.room.pStartX, self.map.room.pStartY, 'r', charAnimation, 8, 10)
 
         self.cam = cam(self.map.room.width, self.map.room.height, True)
         self.mapLayer.append(self.map.room)
         self.spriteLayer.append(self.player)
-
 
         for sprite in self.map.room.sprites:
             self.spriteLayer.append(sprite)
@@ -314,7 +321,7 @@ class game:
         self.dialogueLayer.clear()
         self.fightSceneLayer.clear()
         if event != False:
-            #This seems wierd but may add new layer for optionbox situations
+            # This seems wierd but may add new layer for optionbox situations
             if event.id == "dialogue":
                 self.dialogueLayer.append(event)
 
@@ -338,15 +345,13 @@ class game:
                     self.fightScene.update()
             else:
                 self.fightScene = False
-                    
+
         else:
             self.player.move(self.map.room.returnCollision())
-
 
         self.cam.update(self.player)
 
         pass
-
 
     def rendScreen(self):
         self.win.fill(settings.bgColor)
@@ -361,25 +366,22 @@ class game:
                 self.win.blit(item.image, self.cam.apply(item))
 
         for item in self.fightSceneLayer:
-            #if item.framed:
+            # if item.framed:
             #    self.win.blit(item.image, item.fightRect, item.frame)
-            #else:
+            # else:
             #    self.win.blit(item.image, item.fightRect)
-
 
             self.win.blit(item.image, item.rect)
 
         for item in self.dialogueLayer:
             self.win.blit(item.image, item.rect)
 
-        
     def mainloop(self):
         pygame.display.set_caption(settings.winTitle)
         run = True
 
-        
         while run:
-            
+
             time.sleep(self.buffer)
 
             # Window exit checker
@@ -387,23 +389,32 @@ class game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
-                
-                if event.type == pygame.VIDEORESIZE:
-                    self.win = pygame.display.set_mode((event.w, event.h),
-                        pygame.RESIZABLE)
-                    
+
+                if settings.winResizeable:
+                    if event.type == pygame.VIDEORESIZE:
+                        self.win = pygame.display.set_mode((event.w, event.h),
+                                                        pygame.RESIZABLE)
+
                     settings.winWidth = event.w
                     settings.winHeight = event.h
                     settings.dialogueBoxSize = (event.w, int(event.h/4))
 
-
+            self.getFullScreen()
             self.events()
             self.rendScreen()
 
             pygame.display.update()
 
-
-
+    def getFullScreen(self):
+        if settings.fullScreenActive:
+            keys = pygame.key.get_pressed()
+            if keys[settings.globalBtnSet['fullScreen']]:
+                if self.fullScreen:
+                    self.win = pygame.display.set_mode((settings.winWidth, settings.winHeight))
+                    self.fullScreen = False
+                else:
+                    self.win = pygame.display.set_mode((settings.winWidth, settings.winHeight), pygame.FULLSCREEN)
+                    self.fullScreen = True
 
 
 game1 = game()
