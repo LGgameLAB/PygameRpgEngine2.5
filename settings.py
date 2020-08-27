@@ -1,5 +1,5 @@
 import pygame
-
+import random
 pygame.font.init()
 
 blue = (0, 0, 128)
@@ -116,13 +116,19 @@ class weapon:
     def getInfo(self):
         return self.name
 
+#Weapons are part of items but to access them more easily they have a seperate list
 class inventory:
     def __init__(self):
         self.items = []
-    
+        self.weapons = []
+
     def addItems(self, *args):
         for arg in args:
             self.items.append(arg)
+        
+        for item in self.items:
+            if item.id == "weapon":
+                self.weapons.append(item)
 
 class stats:
     def __init__(self, *args):
@@ -156,6 +162,12 @@ class stats:
             self.stats[healthKey] -= hit.damage*2
         else:
             self.stats[healthKey] -= hit.damage
+    
+    def randAttack(self):
+        randVal = random.randint(0, len(self.inventory.weapons) - 1)
+        
+    
+
 
 def basicSword():
     return weapon(6, 'slash', 'Basic Sword')

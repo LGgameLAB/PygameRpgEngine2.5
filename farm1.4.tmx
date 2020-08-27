@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="17">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="18">
  <tileset firstgid="1" source="farmShtuff.tsx"/>
  <layer id="1" name="Grass" width="32" height="32">
   <data encoding="csv">
-1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,
+1,2,21,21,21,21,21,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,
 21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,
 1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,
 21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,21,22,
@@ -90,6 +90,13 @@
   <object id="14" name="wall" x="292" y="240" width="32" height="12"/>
   <object id="15" name="player" x="256" y="112" width="16" height="16"/>
   <object id="16" x="152" y="-16"/>
+  <object id="17" name="door" x="24" y="0" width="80" height="8">
+   <properties>
+    <property name="destName" value="dungeon1"/>
+    <property name="outDir" value="d"/>
+    <property name="selfName" value="farm1"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer id="3" name="Shtuff 2" width="32" height="32">
   <data encoding="csv">

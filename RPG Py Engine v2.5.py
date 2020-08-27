@@ -8,7 +8,6 @@ import fightScene as fs
 
 pygame.init()
 
-
 class player:
 
     def __init__(self, startX, startY, startDir, animations, speed, animationBuffer):
@@ -20,6 +19,7 @@ class player:
         self.width, self.height = 56, 64  # settings.tileSize, settings.tileSize
         self.rect = pygame.Rect(
             self.x, self.y, self.width, self.height)
+
         self.fullArt = self.animations['fullArt']
         self.framed = False
         self.animationTick = settings.ticker(animationBuffer)
@@ -102,7 +102,25 @@ class player:
             self.image = setAnimations[0]  # .convert()\
             #win.blit(self.image, (self.x, self.y))
 
+class door:
+    def __init__(self, name, rect, destinationName, outDir): 
+        self.id = 'door'
+        self.name = name
+        self.rect = rect
+        if outDir == 'u':
+            self.endRect = pygame.Rect(self.rect[0], self.rect[1] - 64, self.rect[2], self.rect[3])
+        
+        elif outDir == 'd':
+            self.endRect = pygame.Rect(self.rect[0], self.rect[1] + 64, self.rect[2], self.rect[3])
+        
+        elif outDir == 'l':
+            self.endRect = pygame.Rect(self.rect[0] + 64, self.rect[1], self.rect[2], self.rect[3])
+        
+        else:
+            self.endRect = pygame.Rect(self.rect[0] - 64, self.rect[1], self.rect[2], self.rect[3])
 
+        self.destName = destinationName
+    
 class room:
 
     def __init__(self, filename, tileProportion):
@@ -113,6 +131,11 @@ class room:
         print(self.tileWidth)
         self.scale = int(tileProportion / self.tileWidth)
         self.tmxdata = tiledMap
+        try:
+            self.id = tiledMap.properties['gameId']
+            print(self.id)
+        except:
+            print("no Id")
         self.width = (tiledMap.width * self.scale) * tiledMap.tilewidth
         self.height = (tiledMap.height * self.scale) * tiledMap.tileheight
         self.rect = pygame.Rect(0, 0, self.width, self.height)
@@ -120,6 +143,7 @@ class room:
 
         self.walls = []
         self.sprites = []
+        self.doors = []
 
         # self.fullArt =
 
@@ -168,6 +192,12 @@ class room:
             if tile_object.name == 'goblin2':
                 self.sprites.append(npc.goblin2(
                     tile_object.x * self.scale, tile_object.y * self.scale))
+            
+            if tile_object.name == 'door':
+                rect = pygame.Rect(int(tile_object.x*self.scale), int(tile_object.y*self.scale),
+                                              int(tile_object.width*self.scale), int(tile_object.height*self.scale))
+                                            
+                self.doors.append(door(tile_object.selfName, rect, tile_object.destName,  tile_object.outDir))
 
     # def wallOffset(self, offset):
     #    print(self.walls)
@@ -186,9 +216,13 @@ class room:
         for arg in args:
             self.sprites.append(arg)
 
-    def update(self, playerRect):
+    def update(self, player):
         pause = False
         allActivity = False
+        playerRect = player.rect
+
+        if self.checkDoor(player):
+            allActivity = True
 
         for sprite in self.sprites:
             if self.event != False:
@@ -221,9 +255,22 @@ class room:
         if allActivity == False:
             self.event = False
 
+    def checkDoor(self, player):
+        result = False
+        for door in self.doors:
+            if door.rect.colliderect(player.rect):
+                self.event = door
+                result = True
+                print("door")
+
+        return result
+
     def returnEvent(self):
         return self.event
 
+class event:
+    def __init__(self, id):
+        self.id = id
 
 class roomGroup:
     def __init__(self):
@@ -240,6 +287,16 @@ class roomGroup:
 
     def update(self):
         self.room = self.rooms[self.roomIndex]
+    
+    def switchRoom(self, destName):
+        for room in self.rooms:
+            for door in room.doors:
+                if door.name == destName:
+                    self.room = room 
+                    self.roomIndex = self.rooms.index(self.room)
+
+                    return door.endRect[0], door.endRect[1]
+        
 
 
 class cam:
@@ -316,10 +373,13 @@ class game:
 
     def events(self):
         self.map.update()
-        self.map.room.update(self.player.rect)
+        self.map.room.update(self.player)
         event = self.map.room.returnEvent()
         self.dialogueLayer.clear()
         self.fightSceneLayer.clear()
+        self.mapLayer.clear()
+        self.spriteLayer.clear()
+
         if event != False:
             # This seems wierd but may add new layer for optionbox situations
             if event.id == "dialogue":
@@ -330,6 +390,10 @@ class game:
                 if event.subMenuActive:
                     for sprite in event.returnMenu():
                         self.dialogueLayer.append(sprite)
+
+            if event.id == "door":
+                print('nani')
+                self.player.x, self.player.y = self.map.switchRoom(event.destName)
 
             if event.id == "battleSprite":
                 if self.fightScene != False:
@@ -349,9 +413,15 @@ class game:
         else:
             self.player.move(self.map.room.returnCollision())
 
+        self.spriteLayer.append(self.player)
+        for sprite in self.map.room.sprites:
+            self.spriteLayer.append(sprite)
+
+        self.mapLayer.append(self.map.room)
+
         self.cam.update(self.player)
 
-        pass
+        
 
     def rendScreen(self):
         self.win.fill(settings.bgColor)

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="81">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="84">
  <properties>
   <property name="convert" type="bool" value="true"/>
+  <property name="gameId" value="dungeonTest"/>
  </properties>
  <tileset firstgid="1" source="dungeon basics.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="32">
@@ -199,6 +200,13 @@
   <object id="80" name="goblin" x="16" y="288" width="16" height="16">
    <properties>
     <property name="dialogue" value="watcha doin there"/>
+   </properties>
+  </object>
+  <object id="81" name="door" x="48" y="504" width="80" height="8">
+   <properties>
+    <property name="destName" value="farm1"/>
+    <property name="outDir" value="u"/>
+    <property name="selfName" value="dungeon1"/>
    </properties>
   </object>
  </objectgroup>

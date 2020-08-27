@@ -4,17 +4,18 @@ import settings
 import optionBox as opBox
 
 class healthBar:
-    def __init__(self, entityStats, entityPos):
+    def __init__(self, entityStats, entityRect):
         self.total = entityStats.stats[settings.maxHpKey]
         self.current = entityStats.stats[settings.healthKey]
-        self.pos = [entityPos[0], entityPos[1] + 10]
+        self.pos = entityRect.midtop
+        self.pos = (self.pos[0] - (self.total + 2), self.pos[1] - 12)
 
     def update(self):
         self.render()
 
     def render(self):
         self.rect = pygame.Rect(self.pos[0], self.pos[1], self.total*2 + 4, 12)
-        self.healthLine = pygame.Rect(self.pos[0] + 2, self.pos[1] + 2, self.current, 8)
+        self.healthLine = pygame.Rect(2, 2, self.current*2, 8)
         self.image = pygame.surface.Surface((self.rect.width, self.rect.height))
         pygame.draw.rect(self.image, settings.green, (self.healthLine))
 
@@ -49,12 +50,21 @@ class fightScene:
         for sprite in self.sprites1:
             pos = (self.side1Rect.centerx - sprite.fullArt.get_width()/2, self.side1Rect.centery - sprite.fullArt.get_height()/2)
             self.image.blit(sprite.fullArt, pos)
-            self.healthBars.append(healthBar(sprite.stats, pos)) 
+
+            rect = pygame.Rect(pos[0], pos[1], sprite.fullArt.get_width(), sprite.fullArt.get_height())
+            self.healthBars.append(healthBar(sprite.stats, rect)) 
 
         for sprite in self.sprites2:
-            self.image.blit(sprite.fullArt, (self.side2Rect.centerx - sprite.fullArt.get_width()/2, self.side2Rect.centery - sprite.fullArt.get_height()/2))
+            pos = (self.side2Rect.centerx - sprite.fullArt.get_width()/2, self.side2Rect.centery - sprite.fullArt.get_height()/2)
+            self.image.blit(sprite.fullArt, pos)
+            
+            rect = pygame.Rect(pos[0], pos[1], sprite.rect.width, sprite.rect.height)
+            self.healthBars.append(healthBar(sprite.stats, rect))
 
-        
+        for bar in self.healthBars:
+            bar.update()
+            self.image.blit(bar.image, (bar.rect))
+
         self.delay.tick()
 
         if self.delay.done:
@@ -70,7 +80,7 @@ class fightScene:
                         self.sprites2[0].fightActive = False
 
                     print(self.options.result)
-                    self.turn += 2
+                    self.turn += 1
                         
 
         self.options.update()
