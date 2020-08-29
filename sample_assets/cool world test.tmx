@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="epic game art.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="32" height="32">
+  <data encoding="base64" compression="zstd">
+   KLUv/WAAD50BAKAVAAAAFjQAAAA1N1UAAABWAAAAUwogUEPFHmH/gEqPK70+mEYkqAO4mkgBB9Bb4T8jAg==
+  </data>
+ </layer>
+ <layer id="2" name="trees" width="32" height="32">
+  <data encoding="base64" compression="zstd">
+   KLUv/WAAD60GAALKGydwiQQEXACGlVIwkbPSFgBp2JpUOCAAAMSyXNrcu4jJM/h7G1B833kQ5kVOQ5BP0gw/97zFEOM9Ro/WkU5Sugvn2lyaK2O5KhflmizH1ah4FG/iSUQ8iPfwHF7DwlN4CQ+h4BG8gSdwB8/gAh7AASOgAQZMUGYsThcb4AKD0AwAYY/kqvKLoGYJFTbSQm/gNDlIW/nB1ACcDhYJkDnJwcQOBKwVdVvIdH4NNCqPdXaATqEKlw4OTsVR0+MRTmM40JRscCo4cqpiryo3Si0pLagAGA==
+  </data>
+ </layer>
+</map>

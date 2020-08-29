@@ -17,7 +17,8 @@ class healthBar:
         self.rect = pygame.Rect(self.pos[0], self.pos[1], self.total*2 + 4, 12)
         self.healthLine = pygame.Rect(2, 2, self.current*2, 8)
         self.image = pygame.surface.Surface((self.rect.width, self.rect.height))
-        pygame.draw.rect(self.image, settings.green, (self.healthLine))
+        if self.current > 0:
+            pygame.draw.rect(self.image, settings.green, (self.healthLine))
 
 class fightScene:
 
@@ -81,9 +82,16 @@ class fightScene:
 
                     print(self.options.result)
                     self.turn += 1
+                    self.options = False
+                    self.delay.reset()
+                
+            else:
+                self.sprites1[0].stats.recvHit(self.sprites2[0].stats.randAttack())
+                self.turn = 1
+                self.giveOption()
                         
-
-        self.options.update()
+        if self.options != False:
+            self.options.update()
 
     def giveOption(self):
         fightSceneOptions = {}

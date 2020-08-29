@@ -1,5 +1,7 @@
 import pygame
 import random
+import time
+
 pygame.font.init()
 
 blue = (0, 0, 128)
@@ -164,7 +166,15 @@ class stats:
             self.stats[healthKey] -= hit.damage
     
     def randAttack(self):
-        randVal = random.randint(0, len(self.inventory.weapons) - 1)
+        if len(self.inventory.weapons) > 1:
+            randVal = random.randint(0, len(self.inventory.weapons) - 1)
+        
+        else:
+            randVal = 0
+
+        time.sleep(2)
+
+        return self.inventory.weapons[randVal].attack
         
     
 

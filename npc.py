@@ -73,6 +73,7 @@ class npc:
     def __init__(self, name, stats, moveType, interactionType, imgSheet, x, y, w, h, text):
         self.name = name
         self.stats = stgs.stats(stats)
+        self.stats.inventory.addItems(stgs.basicSword())
         self.moveType = moveType
         self.interactionType = interactionType
         self.imgSheet = imgSheet

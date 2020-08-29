@@ -399,10 +399,11 @@ class game:
                 if self.fightScene != False:
                     self.fightSceneLayer.append(self.fightScene)
                     self.fightScene.update()
-                    self.dialogueLayer.append(self.fightScene.options)
-                    if self.fightScene.options.subMenuActive:
-                        for sprite in self.fightScene.options.returnMenu():
-                            self.dialogueLayer.append(sprite)
+                    if self.fightScene.options != False:
+                        self.dialogueLayer.append(self.fightScene.options)
+                        if self.fightScene.options.subMenuActive:
+                            for sprite in self.fightScene.options.returnMenu():
+                                self.dialogueLayer.append(sprite)
                 else:
                     self.fightScene = fs.fightScene(self.player, event)
                     self.fightSceneLayer.append(self.fightScene)
