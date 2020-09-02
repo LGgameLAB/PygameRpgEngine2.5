@@ -5,6 +5,8 @@ import time
 import sys
 import npc
 import fightScene as fs
+import fx
+import sounds
 
 pygame.init()
 
@@ -69,7 +71,6 @@ class player:
         self.y = int(self.y)
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-
         #print(str(self.x) + " " + str(self.y))
 
     def update(self, walls):
@@ -99,14 +100,19 @@ class player:
         if len(setAnimations) > 1:
             pass
         else:
-            self.image = setAnimations[0]  # .convert()\
+            self.image = setAnimations[0]#.convert()
             #win.blit(self.image, (self.x, self.y))
+
+    def rotate(self, angle):
+        self.image2 = self.fullArt
+        self.image = pygame.transform.rotate(self.image2, angle)
 
 class door:
     def __init__(self, name, rect, destinationName, outDir): 
         self.id = 'door'
         self.name = name
         self.rect = rect
+        self.active = False
         if outDir == 'u':
             self.endRect = pygame.Rect(self.rect[0], self.rect[1] - 64, self.rect[2], self.rect[3])
         
@@ -156,7 +162,7 @@ class room:
 
         self.dialogue = False
 
-        self.event = False
+        self.events = []
 
     def load(self):
         tile = self.tmxdata.get_tile_image_by_gid
@@ -218,55 +224,53 @@ class room:
 
     def update(self, player):
         pause = False
-        allActivity = False
         playerRect = player.rect
 
-        if self.checkDoor(player):
-            allActivity = True
+        for event in self.events:
+            if event.active == False:
+                self.events.remove(event)
+
+        self.checkDoor(player)
+            
 
         for sprite in self.sprites:
-            if self.event != False:
-                if self.event.id == "dialogue":
-                    pause = True
-
-                if self.event.id == "optionBox":
-                    pause = True
-
-                if self.event.id == "battleSprite":
-                    pause = True
+            if self.checkEventslen():
+                pause = True
 
             sprite.update(self.walls, playerRect, pause)
 
             if sprite.dialogueBox.active:
-                allActivity = True
-                if self.event == False:
-                    self.event = sprite.dialogueBox
+                if not sprite.dialogueBox in self.events:
+                    self.events.append(sprite.dialogueBox)
 
             if sprite.optionBox.active:
-                allActivity = True
-                if self.event == False:
-                    self.event = sprite.optionBox
+                if not sprite.optionBox in self.events:
+                    self.events.append(sprite.optionBox)
 
-            if sprite.fightActive:
-                allActivity = True
-                if self.event == False:
-                    self.event = sprite
+            if sprite.active:
+                if not sprite in self.events:
+                    self.events.append(sprite)
 
-        if allActivity == False:
-            self.event = False
 
     def checkDoor(self, player):
         result = False
         for door in self.doors:
             if door.rect.colliderect(player.rect):
-                self.event = door
+
+                self.events.append(door)
                 result = True
                 print("door")
 
         return result
 
     def returnEvent(self):
-        return self.event
+        return self.events
+
+    def checkEventslen(self):
+        if len(self.events) < 1:
+            return False
+        else:
+            return True
 
 class event:
     def __init__(self, id):
@@ -336,6 +340,9 @@ class game:
         self.spriteLayer = []
         self.fightSceneLayer = []
         self.dialogueLayer = []
+        self.fxLayer = []
+        self.fx = []
+        self.mixer = sounds.mixer()
         self.fightSceneBool = False
         self.fightScene = False
         self.fullScreen = False
@@ -374,49 +381,63 @@ class game:
     def events(self):
         self.map.update()
         self.map.room.update(self.player)
-        event = self.map.room.returnEvent()
+        events = self.map.room.returnEvent()
         self.dialogueLayer.clear()
         self.fightSceneLayer.clear()
         self.mapLayer.clear()
         self.spriteLayer.clear()
 
-        if event != False:
+        movePause = False
+        
+
+        if len(events) > 0:
             # This seems wierd but may add new layer for optionbox situations
-            if event.id == "dialogue":
-                self.dialogueLayer.append(event)
+            for event in events: 
+                if event.id == "dialogue":
+                    self.dialogueLayer.append(event)
+                    movePause = True
 
-            if event.id == "optionBox":
-                self.dialogueLayer.append(event)
-                if event.subMenuActive:
-                    for sprite in event.returnMenu():
-                        self.dialogueLayer.append(sprite)
+                if event.id == "optionBox":
+                    self.dialogueLayer.append(event)
+                    movePause = True
+                    if event.subMenuActive:
+                        for sprite in event.returnMenu():
+                            self.dialogueLayer.append(sprite)
 
-            if event.id == "door":
-                print('nani')
-                self.player.x, self.player.y = self.map.switchRoom(event.destName)
+                if event.id == "door":
+                    self.player.x, self.player.y = self.map.switchRoom(event.destName)
+                    movePause = True
 
-            if event.id == "battleSprite":
-                if self.fightScene != False:
-                    self.fightSceneLayer.append(self.fightScene)
-                    self.fightScene.update()
-                    if self.fightScene.options != False:
-                        self.dialogueLayer.append(self.fightScene.options)
-                        if self.fightScene.options.subMenuActive:
-                            for sprite in self.fightScene.options.returnMenu():
-                                self.dialogueLayer.append(sprite)
-                else:
-                    self.fightScene = fs.fightScene(self.player, event)
-                    self.fightSceneLayer.append(self.fightScene)
-                    self.fightScene.update()
-            else:
-                self.fightScene = False
-
+                if event.id == "battleSprite":
+                    movePause = True
+                    if self.fightScene != False:
+                        self.fightSceneLayer.append(self.fightScene)
+                        self.fightScene.update()
+                        if self.fightScene.options != False:
+                            self.dialogueLayer.append(self.fightScene.options)
+                            if self.fightScene.options.subMenuActive:
+                                for sprite in self.fightScene.options.returnMenu():
+                                    self.dialogueLayer.append(sprite)
+                    else:
+                        self.fightScene = fs.fightScene(self.player, event)
+                        self.fightSceneLayer.append(self.fightScene)
+                        self.fightScene.update()
         else:
+            self.fightScene = False
+
+        if not movePause:
             self.player.move(self.map.room.returnCollision())
+
+        self.mixer.update(events)
 
         self.spriteLayer.append(self.player)
         for sprite in self.map.room.sprites:
             self.spriteLayer.append(sprite)
+
+        for fx in self.fxLayer:
+            fx.update()
+            if fx.active == False:
+                self.fxLayer.remove(fx)
 
         self.mapLayer.append(self.map.room)
 
@@ -445,6 +466,9 @@ class game:
             self.win.blit(item.image, item.rect)
 
         for item in self.dialogueLayer:
+            self.win.blit(item.image, item.rect)
+        
+        for item in self.fxLayer:
             self.win.blit(item.image, item.rect)
 
     def mainloop(self):

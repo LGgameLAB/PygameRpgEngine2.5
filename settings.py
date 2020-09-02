@@ -16,11 +16,12 @@ lightBlue = (0, 0, 255)
 red = (200, 0, 0 )
 lightRed = (255, 100, 100)
 purple = (102, 0, 102)
+invisable = (0, 0, 0, 0)
 
 winWidth, winHeight = 1024, 768
 centerX, centerY = winWidth/2, winHeight/2
 winTitle = "RPG Engine v2.5"
-bgColor = blue
+bgColor = black
 winResizeable = False
 fullScreenActive = True
 
@@ -102,9 +103,9 @@ class attack:
         self.id = 'attack'
 
 class item:
-    def __init__(self, name, id):
+    def __init__(self, name):
         self.name = name
-        self.id = id
+        self.id = "item"
     
     def getInfo(self):
         return self.name
@@ -184,3 +185,6 @@ def basicSword():
 
 def basicJavelin():
     return weapon(8, 'piercing', 'Basic Javelin')
+
+def spellBook():
+    return item("SpellBook")

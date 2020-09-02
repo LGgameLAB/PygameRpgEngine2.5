@@ -98,7 +98,8 @@ class npc:
         self.optionBox = opBox.optionBox({'1': {'3': {'7': 'hi', '8': "Whats  up"}, '4': 'aloha'}, '2':{'5': 'hola', '6': 'ola'}})  #'hola'})
         self.optionTick = stgs.ticker(10)
 
-        self.fightActive = False
+        #this is really misleading but active is for event purposes only; ex: for fightscene shtuff
+        self.active = False
         self.id = "battleSprite"
 
     def update(self, walls, pRect, pause):
@@ -132,7 +133,7 @@ class npc:
                     keys = pygame.key.get_pressed()
                     if self.interTick.done:
                         if keys[stgs.globalBtnSet['interactionBtn']]:
-                            self.fightActive = True
+                            self.active = True
                 pass
 
             if self.interactionType == 3:
