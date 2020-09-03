@@ -126,6 +126,15 @@ class door:
             self.endRect = pygame.Rect(self.rect[0] - 64, self.rect[1], self.rect[2], self.rect[3])
 
         self.destName = destinationName
+
+class trigger:
+    def __init__(self, rect, type, value):
+        self.id = "trigger"
+        self.rect = rect
+        self.type = type
+        self.value = value
+        self.active = False
+
     
 class room:
 
@@ -150,6 +159,7 @@ class room:
         self.walls = []
         self.sprites = []
         self.doors = []
+        self.triggers = []
 
         # self.fullArt =
 
@@ -205,6 +215,13 @@ class room:
                                             
                 self.doors.append(door(tile_object.selfName, rect, tile_object.destName,  tile_object.outDir))
 
+            if tile_object.name == 'trigger':
+                    rect = pygame.Rect(int(tile_object.x*self.scale), int(tile_object.y*self.scale),
+                        int(tile_object.width*self.scale), int(tile_object.height*self.scale))
+                    
+                    self.triggers.append(trigger(rect, tile_object.functionType, tile_object.value))
+
+
     # def wallOffset(self, offset):
     #    print(self.walls)
     #    for wall in self.walls:
@@ -231,6 +248,7 @@ class room:
                 self.events.remove(event)
 
         self.checkDoor(player)
+        self.checkTrigger(player)
             
 
         for sprite in self.sprites:
@@ -262,6 +280,13 @@ class room:
                 print("door")
 
         return result
+    
+    def checkTrigger(self, player):
+        for trigger in self.triggers:
+            if trigger.rect.colliderect(player.rect):
+                self.events.append(trigger)
+                #print("Trigger")
+                #print("Pizza Ass")
 
     def returnEvent(self):
         return self.events
@@ -343,6 +368,7 @@ class game:
         self.fxLayer = []
         self.fx = []
         self.mixer = sounds.mixer()
+        self.mixer.playMusic(sounds.music["intro"], -1)
         self.fightSceneBool = False
         self.fightScene = False
         self.fullScreen = False
@@ -353,7 +379,8 @@ class game:
         else:
             self.win = pygame.display.set_mode(
                 (settings.winWidth, settings.winHeight))
-
+        
+        
         self.new()
 
     def new(self):
@@ -407,6 +434,10 @@ class game:
                 if event.id == "door":
                     self.player.x, self.player.y = self.map.switchRoom(event.destName)
                     movePause = True
+                
+                if event.id == "trigger":
+                    if event.type == "soundEdit":
+                        self.mixer.changeVolume(event.value)
 
                 if event.id == "battleSprite":
                     movePause = True
@@ -431,6 +462,7 @@ class game:
         self.mixer.update(events)
 
         self.spriteLayer.append(self.player)
+
         for sprite in self.map.room.sprites:
             self.spriteLayer.append(sprite)
 
@@ -468,6 +500,7 @@ class game:
         for item in self.dialogueLayer:
             self.win.blit(item.image, item.rect)
         
+        print(len(self.fx))
         for item in self.fxLayer:
             self.win.blit(item.image, item.rect)
 

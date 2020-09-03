@@ -46,10 +46,9 @@ class rectOut:
         self.scale = 1
         self.angle = 0
 
-        self.ogImage.fill(stgs.invisable)
-        self.ogImage.convert()
+        self.ogImage.fill(stgs.black)
 
-        #pygame.draw.rect(self.ogImage, stgs.white, (0, 0, self.width, self.height))
+        pygame.draw.rect(self.ogImage, stgs.white, (0, 0, self.width, self.height))
     
     def render(self):
         pass
@@ -66,4 +65,7 @@ class rectOut:
                 
             else:
                 self.active = False #gonna test this now
-                
+    
+    class squareOut:
+        def __init__(self):
+            pass

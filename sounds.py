@@ -1,12 +1,13 @@
 import pygame
 
-volume = .6
+volume = .2
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.mixer.init()
 
 sfx = {
     "optionBox": "sounds/sfx/interact.wav",
-    "dialogue": "sounds/sfx/interact2.wav"
+    "dialogue": "sounds/sfx/interact2.wav",
+    "trigger": "sounds/sfx/interact2.wav"
     }
 music = {
     "intro": "sounds/music/intro.wav"
@@ -40,9 +41,9 @@ class mixer:
         pygame.mixer.music.load(song)
         pygame.mixer.music.play(0)
     
-    def changeVolume(self, set):
+    def changeVolume(self, setVolume):
         #insert new volume as float that is < 1
-        volume = set
+        volume = setVolume
         if volume < 1:
             pygame.mixer.music.set_volume(volume)
         else:
