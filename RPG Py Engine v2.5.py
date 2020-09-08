@@ -29,8 +29,8 @@ class player:
         self.setAnimation()
 
         self.stats = settings.stats(20, 20, 1, 0,)
-        self.stats.inventory.addItems(settings.basicSword())
-        self.stats.inventory.addItems(settings.basicJavelin())
+        self.stats.inventory.addItems(settings.basicSword(), settings.basicJavelin())
+        self.stats.inventory.addItems(settings.spellBook())
 
     def move(self, walls):
         keys = pygame.key.get_pressed()
@@ -134,6 +134,21 @@ class trigger:
         self.type = type
         self.value = value
         self.active = False
+        self.run = 0
+
+        try:
+            if "[" in self.value:
+                self.value = self.value.strip('][').split(', ') 
+            
+                for i in range(0, len(self.value)): 
+                    try:
+                        self.value[i] = int(self.value[i]) 
+                    except:
+                        pass
+        
+        except:
+            pass
+        
 
     
 class room:
@@ -285,8 +300,6 @@ class room:
         for trigger in self.triggers:
             if trigger.rect.colliderect(player.rect):
                 self.events.append(trigger)
-                #print("Trigger")
-                #print("Pizza Ass")
 
     def returnEvent(self):
         return self.events
@@ -335,6 +348,7 @@ class cam:
         self.width = width
         self.height = height
         self.limit = limit
+        self.cutScene = False
 
     def apply(self, entity):
         return entity.rect.move(self.camera.topleft)
@@ -343,17 +357,36 @@ class cam:
         return rect.move(self.camera.topleft)
 
     def update(self, target):
-        x = -target.rect.centerx + int(settings.winWidth / 2)
-        y = -target.rect.centery + int(settings.winHeight / 2)
+        #print(self.camera)
+        if self.cutScene:
+            targX = -self.scrollTarget.centerx + int(settings.winWidth / 2)
+            targY = -self.scrollTarget.centery + int(settings.winHeight / 2)
+            #targetPos = (targX, targY)
+            #self.camera.move(targX/64, targY/64)
+            self.camera.x += (targX - self.camera.x)/64
+            self.camera.y += (targY - self.camera.y)/64
+            
+            if self.camera.x < targX:
+                print('nani')
+                self.cutScene = False
+                x = -target.rect.centerx + int(settings.winWidth / 2)
+                y = -target.rect.centery + int(settings.winHeight / 2)
+        else:
+            x = -target.rect.centerx + int(settings.winWidth / 2)
+            y = -target.rect.centery + int(settings.winHeight / 2)
 
-        # limit scrolling to map size
-        if self.limit:
-            x = min(0, x)  # left
-            y = min(0, y)  # top
-            x = max(-(self.width - settings.winWidth), x)  # right
-            y = max(-(self.height - settings.winHeight), y)  # bottom
+            # limit scrolling to map size
+            if self.limit:
+                x = min(0, x)  # left
+                y = min(0, y)  # top
+                x = max(-(self.width - settings.winWidth), x)  # right
+                y = max(-(self.height - settings.winHeight), y)  # bottom
 
-        self.camera = pygame.Rect(x, y, self.width, self.height)
+            self.camera = pygame.Rect(x, y, self.width, self.height)
+
+    def setScroll(self, scrollTarget):
+        self.scrollTarget = pygame.Rect(scrollTarget[0]*64, scrollTarget[1]*64, settings.tileSize, settings.tileSize)
+        self.cutScene = True
 
 
 class game:
@@ -366,7 +399,7 @@ class game:
         self.fightSceneLayer = []
         self.dialogueLayer = []
         self.fxLayer = []
-        self.fx = []
+        self.fxLayer.append(fx.flash(settings.red, 1, .1))
         self.mixer = sounds.mixer()
         self.mixer.playMusic(sounds.music["intro"], -1)
         self.fightSceneBool = False
@@ -438,6 +471,24 @@ class game:
                 if event.id == "trigger":
                     if event.type == "soundEdit":
                         self.mixer.changeVolume(event.value)
+                    
+                    if event.type == "musicPlay":
+                        self.mixer.playMusic(event.value, -1)
+                    
+                    if event.type == "musicStop":
+                        self.mixer.stop()
+                    
+                    if event.type == "fx":
+                        self.fxLayer.append()
+                    
+                    if event.type == "testPrint":
+                        print("HellYAH")
+                    
+                    if event.type == "cutScene":
+                        if event.run < 1:
+                            self.cam.setScroll((event.value[0], event.value[1]))
+                    
+                    #if event.type == 
 
                 if event.id == "battleSprite":
                     movePause = True
@@ -450,6 +501,7 @@ class game:
                                 for sprite in self.fightScene.options.returnMenu():
                                     self.dialogueLayer.append(sprite)
                     else:
+                        self.fxLayer.append(fx.flash(settings.red, 1, .01))
                         self.fightScene = fs.fightScene(self.player, event)
                         self.fightSceneLayer.append(self.fightScene)
                         self.fightScene.update()
@@ -466,10 +518,10 @@ class game:
         for sprite in self.map.room.sprites:
             self.spriteLayer.append(sprite)
 
-        for fx in self.fxLayer:
-            fx.update()
-            if fx.active == False:
-                self.fxLayer.remove(fx)
+        for spFx in self.fxLayer:
+            spFx.update()
+            if spFx.active == False:
+                self.fxLayer.remove(spFx)
 
         self.mapLayer.append(self.map.room)
 
@@ -500,7 +552,6 @@ class game:
         for item in self.dialogueLayer:
             self.win.blit(item.image, item.rect)
         
-        print(len(self.fx))
         for item in self.fxLayer:
             self.win.blit(item.image, item.rect)
 

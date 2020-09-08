@@ -103,12 +103,13 @@ class attack:
         self.id = 'attack'
 
 class item:
-    def __init__(self, name):
+    def __init__(self, name, effect):
         self.name = name
         self.id = "item"
+        self.effect = effect
     
     def getInfo(self):
-        return self.name
+        return self.name, self.effect
 
 class weapon:
     def __init__(self, damage, type, name):
@@ -187,4 +188,4 @@ def basicJavelin():
     return weapon(8, 'piercing', 'Basic Javelin')
 
 def spellBook():
-    return item("SpellBook")
+    return item("SpellBook", "Heal")

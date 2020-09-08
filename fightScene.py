@@ -80,7 +80,6 @@ class fightScene:
                     elif self.options.result.id == "run":
                         self.sprites2[0].fightActive = False
 
-                    print(self.options.result)
                     self.turn += 1
                     self.options = False
                     self.delay.reset()

@@ -7,7 +7,7 @@ pygame.mixer.init()
 sfx = {
     "optionBox": "sounds/sfx/interact.wav",
     "dialogue": "sounds/sfx/interact2.wav",
-    "trigger": "sounds/sfx/interact2.wav"
+    "soundEdit": "sounds/sfx/interact2.wav"
     }
 music = {
     "intro": "sounds/music/intro.wav"
@@ -36,6 +36,10 @@ class mixer:
             for event in events:
                 if event.id in eventList:
                     self.playFx(event.id)
+                
+                if event.id == "trigger":
+                    if event.type in eventList:
+                        self.playFx(event.type)
     
     def music(self, song, repeat):
         pygame.mixer.music.load(song)
